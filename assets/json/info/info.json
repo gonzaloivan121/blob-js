@@ -1,0 +1,35 @@
+{
+    "description": "Hello, my name is Gonzalo. I'm a 24 year old programmer with more than 5 years of experience in a professional programming environment",
+    "socials": [
+        {
+            "name": "GitHub",
+            "icon": "assets/svg/icons/github.svg",
+            "url": "https://github.com/gonzaloivan121"
+        },
+        {
+            "name": "LinkedIn",
+            "icon": "assets/svg/icons/linkedin.svg",
+            "url": "https://www.linkedin.com/in/g-chaparro-barese/"
+        },
+        {
+            "name": "Twitter",
+            "icon": "assets/svg/icons/twitter.svg",
+            "url": "https://twitter.com/gonsa_oceano"
+        },
+        {
+            "name": "Instagram",
+            "icon": "assets/svg/icons/instagram.svg",
+            "url": "https://www.instagram.com/gonsa.oceano"
+        },
+        {
+            "name": "YouTube",
+            "icon": "assets/svg/icons/youtube.svg",
+            "url": "https://www.youtube.com/c/xLoxLoLex/"
+        },
+        {
+            "name": "Share",
+            "icon": "assets/svg/icons/share.svg",
+            "share_text": "Life JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!"
+        }
+    ]
+}
