@@ -1,29 +1,56 @@
+/**
+ * Entity class that holds data for the Game
+ * 
+ * @class
+ * @constructor
+ * @public
+ */
 class Entity {
+    id = null;
     is_alive = true;
     velocity = new Vector();
+    direction = new Vector();
     points = 0;
 
     /**
+     * Create a new Entity
      * 
-     * @param {string} name - The name of the Entity
-     * @param {Vector} position - The Vector position of the Entity
-     * @param {string} color - The color string of the Entity
-     * @param {number} radius - The radius of the Entity
+     * @param { string } name - The name of the Entity
+     * @param { Vector } position - The Vector position of the Entity
+     * @param { string } color - The color string of the Entity
+     * @param { number } radius - The radius of the Entity
      */
     constructor(name = "Entity", position, color, radius = 6) {
+        /**
+         *  The name of the Entity
+         * @type { string }
+         * @public
+         */
         this.name = name;
+        /**
+         *  The Vector position of the Entity
+         * @type { Vector }
+         * @public
+         */
         this.position = position;
         this.color = color;
         this.radius = radius;
     }
 
+    /**
+     * Update the Entity
+     */
     update() {
         if (this.is_alive) {
             this.move();
+            this.clamp_position();
             this.draw();
         }
     }
 
+    /**
+     * Draw the Entity
+     */
     draw() {
         context.beginPath();
         context.fillStyle = this.color;
@@ -43,9 +70,19 @@ class Entity {
     }
 
     /**
+     * Set the direction Vector of the Entity
      * 
-     * @param {Particle[]|null} particles 
-     * @param {Entity[]|null} entities 
+     * @param { Vector } direction 
+     */
+    set_direction(direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Check if this Entity has collided with any Particle or other Entity and eats it.
+     * 
+     * @param { Particle[] | null } particles - The Particles to check collision with
+     * @param { Entity[] | null } entities - The Entities to check collision with
      */
     check_collision(particles, entities) {
         if (particles !== null) {
@@ -58,61 +95,101 @@ class Entity {
         if (entities !== null) {
             var entity = this.collides(entities);
             if (entity !== undefined) {
-                if (this.radius > entity.radius) {
-                    this.eat_entity(entity);
-                } else {
-                    entity.eat_entity(this);
+                if (entity.is_alive && this.is_alive) {
+                    if (this.radius > entity.radius) {
+                        this.eat_entity(entity);
+                    } else {
+                        entity.eat_entity(this);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Return the Particle or Entity that this Entity has collided with
+     * 
+     * @param { Particle[] | Entity[] } others - Particles or Entities to check collision with
+     * @returns { Particle | Entity } The Particle or Entity that this Entity has collided with
+     */
     collides(others) {
-        return others.find(o => {
-            return o.position.x >= this.position.x - this.radius * 2 &&
-                o.position.x < this.position.x + this.radius * 2 &&
-                o.position.y >= this.position.y - this.radius * 2 &&
-                o.position.y < this.position.y + this.radius * 2;
+        return others.find(other => {
+            return  other.position.x >= this.position.x - this.radius * 2 &&
+                    other.position.x <  this.position.x + this.radius * 2 &&
+                    other.position.y >= this.position.y - this.radius * 2 &&
+                    other.position.y <  this.position.y + this.radius * 2;
         });
     }
 
     /**
+     * Grow this Entity by value
      * 
-     * @param {Particle} particle 
+     * @param { number } value - The value to grow
+     */
+    grow(value) {
+        this.radius += value;
+    }
+
+    /**
+     * Eat a particle
+     * 
+     * @param { Particle } particle - The Particle to eat
      */
     eat_particle(particle) {
-        this.radius += particle.value * 0.01;
+        this.grow(particle.value * 0.001);
         this.points += particle.value;
         particle.get_eaten();
     }
 
     /**
+     * Eat another Entity
      * 
-     * @param {Entity} entity 
+     * @param { Entity } entity - The Entity to eat
      */
     eat_entity(entity) {
-        this.radius += entity.points * 0.01;
+        console.log("The Entity with ID " + entity.id + " has been eaten by the Entity with ID " + this.id)
+        this.grow(entity.radius);
         this.points += entity.points;
         entity.get_eaten();
     }
 
+    /**
+     * Get eaten
+     */
     get_eaten() {
         this.is_alive = false;
     }
 
-    move() {
-        /*var damp_number = (1 / this.radius) * 4;
-        var damp_vector = new Vector(damp_number, damp_number);
-        this.velocity.multiply(damp_vector);*/
+    /**
+     * Split in half
+     */
+    split() {
+        console.log("split")
+    }
 
-        this.velocity.sum(this.velocity);
+    /**
+     * Update position
+     */
+    move() {
+        const damp_number = (1 / this.radius) * 10;
+        const damp_vector = new Vector(damp_number, damp_number);
+        const direction_damped = Vector.multiply(this.direction, damp_vector);
+
+        this.velocity.sum(direction_damped);
         this.velocity.multiply(new Vector(0.5, 0.5));
         this.position.sum(this.velocity);
+    }
 
+    /**
+     * Clamp the position to the Canvas.
+     * If the Entity goes out of frame,
+     * it will appear from the other side
+     */
+    clamp_position() {
         if (this.position.x < 0) {
             this.position.x = canvas_width;
         }
-        
+
         if (this.position.x > canvas_width) {
             this.position.x = 0;
         }

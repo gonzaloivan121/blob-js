@@ -3,26 +3,26 @@
 
 <head>
     <!-- Primary Meta Tags -->
-    <title>Life JS</title>
-    <meta name="title" content="Life JS">
-    <meta name="description" content="Life JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
+    <title>Blob JS</title>
+    <meta name="title" content="Blob JS">
+    <meta name="description" content="Blob JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
     <meta name="author" content="Gonzalo Iván Chaparro Barese">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://gonzaloivan121.github.io/isomatrix-js/">
-    <meta property="og:title" content="Life JS">
+    <meta property="og:title" content="Blob JS">
     <meta property="og:description"
-        content="Life JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
+        content="Blob JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
     <meta property="og:image" content="https://gonzaloivan121.github.io/isomatrix-js/assets/img/content.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://gonzaloivan121.github.io/isomatrix-js/">
-    <meta property="twitter:title" content="Life JS">
+    <meta property="twitter:title" content="Blob JS">
     <meta property="twitter:description"
-        content="Life JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
+        content="Blob JS is a small simulation where life can form as cells. Play around with the sliders and see what happens!">
     <meta property="twitter:image" content="https://gonzaloivan121.github.io/isomatrix-js/assets/img/content.png">
     
     <link rel="stylesheet" href="./assets/css/styles.css">
@@ -41,8 +41,9 @@
         <!-- START PANNEL -->
         <div class="pannel" id="pannel">
             <div class="title">Life Settings</div>
-            <div class="settings" id="life-settings">
-                <!-- Insert settings via script -->
+            <div class="settings">
+                <input type="text" name="playername" class="text-input" id="playername" placeholder="Player name" required />
+                <label for="playername" class="text-input-label">Player name</label>
             </div>
             <div class="buttons">
                 <button class="button box-shadow" onclick="start_game()">Start Game</button>
@@ -84,16 +85,36 @@
             <div class="modal-close" onclick="hide_info_modal()">X</div>
         </div>
         <div class="container">
-            <p style="text-align: center;" id="info-description"></p>
+            <p style="text-align: center;" id="info-description">
+                <!-- Insert info via script -->
+            </p>
         </div>
         <div class="footer" id="info-buttons">
             <!-- Insert buttons via script -->
         </div>
     </div>
     <!-- END INFO MODAL -->
-
+    <!-- START FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        // NOTE - INCLUDE YOUR FIREBASE CONFIG HERE FOR ANYTHING TO WORK:
+        const firebaseConfig = {
+            apiKey: "AIzaSyBg9pJvV3UMrdageQxS2zQJDQgoIIktFgs",
+            authDomain: "blob-js.firebaseapp.com",
+            databaseURL: "https://blob-js-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "blob-js",
+            storageBucket: "blob-js.appspot.com",
+            messagingSenderId: "787407800201",
+            appId: "1:787407800201:web:859cb3dc15ba5db6ab0358"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <!-- END FIREBASE -->
     <!-- START IMPORTING SCRIPTS -->
     <script src="./assets/js/toast.js"></script>
+    <script src="./assets/js/game/color.js"></script>
     <script src="./assets/js/game/vector.js"></script>
     <script src="./assets/js/game/raycast.js"></script>
     <script src="./assets/js/game/particle.js"></script>

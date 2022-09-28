@@ -1,21 +1,21 @@
 /**
- * Particle class that represents food for the Entities
+ * Obstacle class that splits an Entity and makes it lose points
  * 
  * @class
  * @constructor
  * @public
  */
-class Particle {
+class Obstacle {
     /**
-     * Create a new Particle
+     * Create a new Obstacle
      * 
-     * @param { Vector } position - The Vector position of the Particle
-     * @param { string } color - The color string of the Particle
-     * @param { number } radius - The radius of the Particle
+     * @param { Vector } position - The Vector position of the Obstacle
+     * @param { string } color - The color string of the Obstacle
+     * @param { number } radius - The radius of the Obstacle
      */
     constructor(position, color, radius = 2) {
         /**
-         *  The Vector position of the Particle
+         *  The Vector position of the Obstacle
          * @type { Vector }
          * @public
          */
@@ -26,21 +26,10 @@ class Particle {
     }
 
     /**
-     * Update the Particle
+     * Update the Obstacle
      */
     update() {
         this.draw();
-    }
-
-    /**
-     * When the Particle gets eaten, it moves to a new random position and it's value is set to a new random number
-     */
-    get_eaten() {
-        this.move_to(new Vector(
-            Utilities.random(50, canvas_width - 50),
-            Utilities.random(50, canvas_height - 50)
-        ));
-        this.value = Utilities.random(50, 150);
     }
 
     /**

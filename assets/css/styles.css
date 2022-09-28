@@ -4,6 +4,14 @@
     --select-arrow: var(--select-border);
 }
 
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
 html, body {
     margin: 0;
 }
@@ -75,6 +83,34 @@ ul, ol {
     display: flex;
     flex-direction: column;
     padding: 15px 0px;
+}
+
+.text-input-label {
+    font-size: 1.2rem;
+    margin-left: 1rem;
+    margin-top: 0.75rem;
+    display: block;
+    transition: all 0.3s;
+    transform: translateY(0rem);
+}
+
+.text-input {
+    color: #333;
+    font-size: 1.2rem;
+    padding: 0.75rem 1rem;
+    margin: 5px 0;
+    border-radius: 0.2rem;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    width: calc(100% - 2rem);
+    transition: all 0.3s;
+}
+
+.text-input:placeholder-shown + .text-input-label {
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transform: translateY(-4rem);
+  transform: translateY(-4rem);
 }
 
 .pannel .setting .setting-name {

@@ -16,14 +16,20 @@ var game = new Game(60);
 
 function start_game() {
     if (!game.started) {
-        game.start_game();
+        const player_name_input = document.getElementById("playername");
+        const player_name = player_name_input.value;
+
+        if (!player_name_input.checkValidity()) {
+            player_name_input.reportValidity();
+            createToast('Player name cannot be empty!', TOAST_TYPE.WARNING);
+            return;
+        }
+
+        if (game.start_game(player_name)) {
+            player_name_input.disabled = true;
+        }
     }
 }
-
-document.addEventListener('keydown', function (event) {
-    const key = event.key.toUpperCase();
-    game.move_player(key);
-});
 
 function load_info() {
     Utilities.load_json('assets/json/info/info.json', (response) => {
@@ -88,16 +94,52 @@ function generate_info_modal(info = null) {
     });
 }
 
-canvas.onmousemove = function (e) {
-    var rect = this.getBoundingClientRect(),
-        screen_x = Math.floor(e.clientX - rect.left),
-        screen_y = Math.floor(e.clientY - rect.top);
+canvas.onmousemove = e => {
+    if (Input.mouse.left.down) {
+        const rect = canvas.getBoundingClientRect(),
+            screen_x = Math.floor(e.clientX - rect.left),
+            screen_y = Math.floor(e.clientY - rect.top);
+        
+        const position = new Vector(screen_x, screen_y);
+
+        if (game.player !== null) {
+            const direction = Vector.subtract(game.player.position, position).normalized().negative();
+            game.set_player_direction(direction);
+        }
+    }
 };
 
-canvas.onmousedown = function (e) {
-    var rect = this.getBoundingClientRect(),
-        screen_x = Math.floor(e.clientX - rect.left),
-        screen_y = Math.floor(e.clientY - rect.top);
+canvas.onmousedown = e => {
+    switch (e.button) {
+        case 0:
+            Input.mouse.left.down = true;
+            break;
+        case 1:
+            Input.mouse.middle.down = true;
+            break;
+        case 2:
+            Input.mouse.right.down = true;
+            break;
+    }
+}
+
+canvas.onmouseup = e => {
+    switch (e.button) {
+        case 0:
+            Input.mouse.left.down = false;
+            break;
+        case 1:
+            Input.mouse.middle.down = false;
+            break;
+        case 2:
+            Input.mouse.right.down = false;
+            break;
+    }
+}
+
+canvas.oncontextmenu = e => {
+    e.preventDefault();
+    e.stopPropagation();
 }
 
 function show_confirmation_dialbox(
