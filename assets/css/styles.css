@@ -60,11 +60,69 @@ ul, ol {
     pointer-events: none;
 }
 
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-button {
+    background-color: transparent;
+    padding: 7px;
+    font-size: 16px;
+    border: none;
+    float: right;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    top: 90%;
+    border-bottom-left-radius: 0.2rem;
+    border-bottom-right-radius: 0.2rem;
+}
+
+.dropdown-content .dropdown-option {
+    color: black;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    border-bottom-left-radius: 0.2rem;
+    border-bottom-right-radius: 0.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.skin-image {
+    width: 2rem;
+    float: left;
+}
+
+.skin-name {
+    margin-left: 1rem;
+    float: left;
+    padding: 0.3rem 0;
+}
+
+.dropdown-content .dropdown-option:hover {
+    background-color: #eeeeee;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
 .pannel {
     width: 20%;
     background: linear-gradient(#081236, #142150);
     padding: 30px 0;
     position: relative;
+    z-index: 1;
 }
 
 .title {
@@ -104,6 +162,7 @@ ul, ol {
     border: none;
     width: calc(100% - 2rem);
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .text-input:placeholder-shown + .text-input-label {
@@ -301,8 +360,8 @@ input[type="color"]:focus + .text-input-label {
 }
 
 .box-shadow {
-    -webkit-box-shadow: 0px 0px 5px 0px rgb(255 255 255 / 50%);
-    box-shadow: 0px 0px 5px 0px rgb(255 255 255 / 50%);
+    -webkit-box-shadow: 0px 0px 10px 0px rgb(255 255 255 / 50%);
+    box-shadow: 0px 0px 10px 0px rgb(255 255 255 / 50%);
 }
 
 .confirmation-dialbox,
@@ -328,6 +387,10 @@ input[type="color"]:focus + .text-input-label {
     height: 50%;
     top: calc(50% - 50% * 0.5);
     left: calc(50% - 50% * 0.5);
+}
+
+.header .title {
+    padding: 0;
 }
 
 .confirmation-dialbox .header,
@@ -368,6 +431,16 @@ input[type="color"]:focus + .text-input-label {
     align-items: center;
     justify-content: space-evenly;
     font-size: 1.25em;
+}
+
+#login-modal .header {
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid white;
+}
+
+#login-modal .container {
+    height: calc(85% - 20px);
 }
 
 .upload-modal .container {
@@ -427,6 +500,10 @@ input[type="color"]:focus + .text-input-label {
     z-index: 1;
     bottom: 0;
     right: 0;
+}
+
+.drop-shadow {
+    filter: drop-shadow(0px 0px 10px #000);
 }
 
 /* TOAST */
@@ -518,7 +595,7 @@ input[type="color"]:focus + .text-input-label {
         align-items: center;
         position: fixed;
         margin: 20px;
-        z-index: 1;
+        z-index: 2;
     }
 
     .menu-button,

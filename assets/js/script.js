@@ -11,6 +11,7 @@ resize();
 window.addEventListener("resize", resize);
 
 load_info();
+load_skins();
 show_login_modal();
 
 var game = new Game(60);
@@ -19,6 +20,7 @@ function start_game() {
     if (!game.started) {
         const player_name_input = document.getElementById("playername");
         const player_color_input = document.getElementById("playercolor");
+        const player_skin = document.getElementById("skin-image").src;
         
         const player_name = player_name_input.value;
         const player_color = {
@@ -33,7 +35,7 @@ function start_game() {
             return;
         }
 
-        if (game.start_game(player_name, player_color)) {
+        if (game.start_game(player_name, player_color, player_skin)) {
             player_name_input.disabled = true;
             player_color_input.disabled = true;
             hide_login_modal();
@@ -48,7 +50,7 @@ function load_info() {
         try {
             info = JSON.parse(response);
         } catch (error) {
-            createToast('No se ha podido obtener la información sobre las redes sociales', 'error');
+            createToast('No se ha podido obtener la información sobre las redes sociales', TOAST_TYPE.ERROR);
         }
 
         if (info !== null) {
@@ -59,9 +61,27 @@ function load_info() {
     });
 }
 
+function load_skins() {
+    Utilities.load_json('assets/json/skins/skins.json', (response) => {
+        var skins = null;
+
+        try {
+            skins = JSON.parse(response);
+        } catch (error) {
+            createToast('No se han podido obtener las skins', TOAST_TYPE.ERROR);
+        }
+
+        if (skins !== null) {
+            generate_skins_dropdown(skins);
+        }
+    }, (error) => {
+        createToast(error, TOAST_TYPE.ERROR);
+    });
+}
+
 /**
  * 
- * @param {{description: string, socials: [{name: string, icon: string, url: string}]}} info 
+ * @param {{description: string, socials: {name: string, icon: string, url: string}[]}} info 
  * @returns 
  */
 function generate_info_modal(info = null) {
@@ -88,7 +108,7 @@ function generate_info_modal(info = null) {
             }
         } else {
             const share_data = {
-                title: 'Life JS',
+                title: 'Blob JS',
                 text: social.share_text,
                 url: window.location.href
             };
@@ -102,6 +122,50 @@ function generate_info_modal(info = null) {
 
         info_buttons_element.appendChild(button);
     });
+}
+
+/**
+ * 
+ * @param {{name: string, icon: string}[]} skins 
+ */
+function generate_skins_dropdown(skins = null) {
+    if (skins === null) return;
+
+    const skins_container = document.getElementById("skins-container");
+
+    skins.forEach(skin => {
+        const option = document.createElement("div");
+        const img = document.createElement("img");
+        const name = document.createElement("div");
+
+        option.classList.add("dropdown-option");
+        img.classList.add("skin-image");
+        name.classList.add("skin-name");
+
+        img.src = skin.icon;
+        name.innerHTML = skin.name;
+
+        option.onclick = () => {
+            set_skin(option);
+        }
+
+        option.prepend(name);
+        option.prepend(img);
+
+        skins_container.appendChild(option);
+    });
+}
+
+function set_skin(option) {
+    const skin_image = document.getElementById("skin-image");
+    const skin_name = document.getElementById("skin-name");
+
+    skin_image.src = option.querySelector(".skin-image").src;
+    skin_name.innerHTML = option.querySelector(".skin-name").innerHTML;
+
+    if (game.started) {
+        game.set_player_skin(skin_image.src);
+    }
 }
 
 canvas.onmousemove = e => {

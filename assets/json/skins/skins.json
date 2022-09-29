@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Spooderman",
+        "icon": "assets/img/skins/Spooderman.png"
+    },
+    {
+        "name": "Sanic",
+        "icon": "assets/img/skins/Sanic.png"
+    },
+    {
+        "name": "Pepe",
+        "icon": "assets/img/skins/Pepe.png"
+    }
+]

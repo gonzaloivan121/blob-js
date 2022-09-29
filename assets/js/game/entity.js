@@ -19,8 +19,9 @@ class Entity {
      * @param { Vector } position - The Vector position of the Entity
      * @param { string } color - The color string of the Entity
      * @param { number } radius - The radius of the Entity
+     * @param { string } skin - The image skin URL of the Entity
      */
-    constructor(name = "Entity", position, color, radius = 6) {
+    constructor(name = "Entity", position, color, radius = 6, skin = null) {
         /**
          *  The name of the Entity
          * @type { string }
@@ -50,6 +51,7 @@ class Entity {
         );
 
         this.radius = radius;
+        this.skin = skin;
     }
 
     /**
@@ -68,6 +70,7 @@ class Entity {
      */
     draw() {
         this.draw_circle();
+        this.draw_skin();
         this.draw_name();
         this.draw_direction_arrow();
     }
@@ -87,6 +90,20 @@ class Entity {
         context.fill();
         context.stroke();
         context.closePath();
+    }
+
+    draw_skin() {
+        if (this.skin !== null) {
+            const image = new Image();
+            image.src = this.skin;
+            context.drawImage(
+                image,
+                this.position.x - this.radius * 1.5,
+                this.position.y - this.radius * 1.5,
+                this.radius * 3,
+                this.radius * 3
+            );
+        }
     }
 
     draw_name() {
@@ -184,7 +201,7 @@ class Entity {
      * @param { Particle } particle - The Particle to eat
      */
     eat_particle(particle) {
-        console.log("The Particle at", particle.position, "has been eaten by the Player with ID " + this.id)
+        console.log("The", particle, "has been eaten by the", this)
         this.grow(particle.points * 0.001);
         this.points += particle.points;
         particle.get_eaten(this.id);
@@ -196,7 +213,7 @@ class Entity {
      * @param { Entity } entity - The Entity to eat
      */
     eat_entity(entity) {
-        console.log("The Player with ID " + entity.id + " has been eaten by the Player with ID " + this.id)
+        console.log("The", entity, "has been eaten by the", this)
         this.grow(entity.radius);
         this.points += entity.points;
         entity.get_eaten();

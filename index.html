@@ -32,10 +32,10 @@
     <div id="toast"></div>
     <!-- START CONTENT -->
     <div class="content" id="content">
-        <div class="menu-button-container" onclick="toogle_pannel()">
+        <div class="menu-button-container drop-shadow" onclick="toogle_pannel()">
             <div class="menu-button"></div>
         </div>
-        <div class="menu-info-container" onclick="show_info_modal()">
+        <div class="menu-info-container drop-shadow" onclick="show_info_modal()">
             <img src="assets/svg/icons/info.svg" height="30" width="30">
         </div>
         <!-- START PANNEL -->
@@ -49,6 +49,17 @@
                 <div class="setting">
                     <input type="color" name="playercolor" class="text-input" id="playercolor" required />
                     <label for="playercolor" class="text-input-label">Player color</label>
+                </div>
+                <div class="setting">
+                    <div class="text-input dropdown" id="playerskin">
+                        <img class="skin-image" id="skin-image">
+                        <div class="skin-name" id="skin-name"></div>
+                        <button class="dropdown-button">▼</button>
+                        <div class="dropdown-content" id="skins-container">
+                            <!-- Insert skins via script -->
+                        </div>
+                    </div>
+                    <label for="playerskin" class="text-input-label">Player skin</label>
                 </div>
             </div>
             <div class="buttons">
@@ -102,16 +113,13 @@
     <!-- END INFO MODAL -->
     <!-- START LOGIN MODAL -->
     <div id="login-modal" class="info-modal box-shadow">
-        <div class="header" style="justify-content: center; align-items: center;">
-            <div class="title">Please, login</div>
+        <div class="header box-shadow" style="justify-content: center; align-items: center;">
+            <div class="title">Welcome to Blob JS!</div>
         </div>
         <div class="container">
             <p style="text-align: center;" id="info-description">
-                <!-- Insert info via script -->
+                Please, join the game with a username and pick a color to be able to play.
             </p>
-        </div>
-        <div class="footer" id="info-buttons">
-            <!-- Insert buttons via script -->
         </div>
     </div>
     <!-- END LOGIN MODAL -->

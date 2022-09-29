@@ -83,10 +83,11 @@ class Game {
      * Create Particles, Entities and the Player.
      * Start interval for the first time
      */
-    start_game(player_name = null, player_color = null) {
+    start_game(player_name = null, player_color = null, player_skin) {
         if (player_name === null || player_color === null) return;
+        if (player_skin.length === 0) player_skin = null;
 
-        this.player = this.create_player(player_name, player_color);
+        this.player = this.create_player(player_name, player_color, player_skin);
         
         var started = false;
         
@@ -128,7 +129,8 @@ class Game {
                     border_color: this.player.border_color,
                     color_rgb: this.player.color_rgb,
                     radius: this.player.radius,
-                    points: this.player.points
+                    points: this.player.points,
+                    skin: this.player.skin
                 });
 
                 // Remove me from firebase when I disconnect
@@ -209,6 +211,7 @@ class Game {
                     ),
                     color_rgb: entity.color_rgb,
                     radius: entity.radius,
+                    skin: entity.skin,
                     direction: new Vector(
                         entity.direction.x,
                         entity.direction.y
@@ -236,6 +239,7 @@ class Game {
                 );
     
                 found_entity.radius = entity.radius;
+                found_entity.skin = entity.skin;
                 found_entity.points = entity.points;
                 found_entity.is_alive = entity.is_alive;
             }
@@ -278,11 +282,11 @@ class Game {
      * @param { string } color - The color of the Player
      * @returns { Player } The generated Player
      */
-    create_player(name = "Player", color) {
+    create_player(name = "Player", color, skin) {
         return new Player(name, new Vector(
             Utilities.random(50, canvas_width - 50),
             Utilities.random(50, canvas_height - 50)
-        ), color);
+        ), color, 6, skin);
     }
 
     /**
@@ -303,6 +307,7 @@ class Game {
             ),
             color_rgb: added_player.color_rgb,
             radius: added_player.radius,
+            skin: added_player.skin,
             direction: new Vector(
                 added_player.direction.x,
                 added_player.direction.y
@@ -438,6 +443,14 @@ class Game {
      */
     set_player_direction(direction) {
         this.player.set_direction(direction);
+    }
+
+    set_player_skin(skin) {
+        this.player.skin = skin;
+    }
+    
+    set_player_name(name) {
+        this.player.name = name;
     }
 
     start_interval(time) {
