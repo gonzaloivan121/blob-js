@@ -22,7 +22,7 @@ class Particle {
         this.position = position;
         this.color = color;
         this.radius = radius;
-        this.value = Utilities.random(50, 150);
+        this.points = Utilities.random(50, 150);
     }
 
     /**
@@ -33,14 +33,10 @@ class Particle {
     }
 
     /**
-     * When the Particle gets eaten, it moves to a new random position and it's value is set to a new random number
+     * When the Particle gets eaten, it moves to a new random position and it's points is set to a new random number
      */
     get_eaten() {
-        this.move_to(new Vector(
-            Utilities.random(50, canvas_width - 50),
-            Utilities.random(50, canvas_height - 50)
-        ));
-        this.value = Utilities.random(50, 150);
+        firebase.database().ref('particles/' + this.position.x + 'x' + this.position.y).remove();
     }
 
     /**

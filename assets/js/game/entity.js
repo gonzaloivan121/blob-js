@@ -35,6 +35,8 @@ class Entity {
          */
         this.position = position;
 
+        this.color_rgb = color;
+
         this.border_color = Color.get_rgb_string(
             color.r - 20,
             color.g - 20,
@@ -182,9 +184,10 @@ class Entity {
      * @param { Particle } particle - The Particle to eat
      */
     eat_particle(particle) {
-        this.grow(particle.value * 0.001);
-        this.points += particle.value;
-        particle.get_eaten();
+        console.log("The Particle at", particle.position, "has been eaten by the Player with ID " + this.id)
+        this.grow(particle.points * 0.001);
+        this.points += particle.points;
+        particle.get_eaten(this.id);
     }
 
     /**
@@ -193,7 +196,7 @@ class Entity {
      * @param { Entity } entity - The Entity to eat
      */
     eat_entity(entity) {
-        console.log("The Entity with ID " + entity.id + " has been eaten by the Entity with ID " + this.id)
+        console.log("The Player with ID " + entity.id + " has been eaten by the Player with ID " + this.id)
         this.grow(entity.radius);
         this.points += entity.points;
         entity.get_eaten();
@@ -204,6 +207,7 @@ class Entity {
      */
     get_eaten() {
         this.is_alive = false;
+        firebase.database().ref('players/' + this.id).remove();
     }
 
     /**

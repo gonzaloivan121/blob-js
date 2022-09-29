@@ -86,19 +86,24 @@ class Game {
     start_game(player_name = null, player_color = null) {
         if (player_name === null || player_color === null) return;
 
-        this.create_particles(300);
         this.player = this.create_player(player_name, player_color);
-
+        
         var started = false;
         
         if (this.IntervalID === undefined) {
             this.start_interval(this.Interval);
         }
-
+        
         if (this.IntervalID !== undefined) {
             started = true;
             this.login();
             this.listen_to_firebase();
+
+            firebase.database().ref('particles').once('value').then(snapshot => {
+                if (snapshot.numChildren() === 0) {
+                    this.create_particles(100);
+                }
+            });
         }
 
         return started;
@@ -111,21 +116,31 @@ class Game {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 this.player.id = user.uid;
-                this.playerRef = firebase.database().ref('players/' + this.player.id);
+                this.player_ref = firebase.database().ref('players/' + this.player.id);
 
-                this.playerRef.set({
+                this.player_ref.set({
                     id: this.player.id,
                     name: this.player.name,
                     position: this.player.position,
                     direction: this.player.direction,
                     velocity: this.player.velocity,
                     color: this.player.color,
+                    border_color: this.player.border_color,
+                    color_rgb: this.player.color_rgb,
                     radius: this.player.radius,
                     points: this.player.points
                 });
 
                 // Remove me from firebase when I disconnect
-                this.playerRef.onDisconnect().remove();
+                this.player_ref.onDisconnect().remove(onComplete => {
+                    if (onComplete === null) { // Removed successfully
+                        firebase.database().ref('players').once('value').then(snapshot => {
+                            if (snapshot.numChildren() < 1) {
+                                firebase.database().ref('particles').remove();
+                            }
+                        });
+                    }
+                });
             } else {
                 // Logged out
             }
@@ -152,7 +167,19 @@ class Game {
         });
 
         all_players_ref.on("child_removed", snapshot => {
-            this.handle_player_left(snapshot);
+            this.handle_player_removed(snapshot);
+        });
+
+        all_particles_ref.on("value", snapshot => {
+            this.handle_all_particles(snapshot);
+        });
+
+        all_particles_ref.on("child_added", snapshot => {
+            this.handle_new_particle(snapshot);
+        });
+
+        all_particles_ref.on("child_removed", snapshot => {
+            this.handle_particle_removed(snapshot);
         });
     }
 
@@ -163,6 +190,7 @@ class Game {
      */
     handle_all_players(snapshot) {
         const entities_snapshot = snapshot.val();
+        if (entities_snapshot === null) return;
         Object.keys(entities_snapshot).forEach(id => {
             var entity = entities_snapshot[id];
             if (entity.id === this.player.id) return;
@@ -171,14 +199,75 @@ class Game {
                 return e.id === entity.id;
             });
 
-            found_entity.position = new Vector(
-                entity.position.x,
-                entity.position.y
+            if (!found_entity) {
+                this.create_entity({
+                    id: entity.id,
+                    name: entity.name,
+                    position: new Vector(
+                        entity.position.x,
+                        entity.position.y
+                    ),
+                    color_rgb: entity.color_rgb,
+                    radius: entity.radius,
+                    direction: new Vector(
+                        entity.direction.x,
+                        entity.direction.y
+                    ),
+                    velocity: new Vector(
+                        entity.velocity.x,
+                        entity.velocity.y
+                    ),
+                    points: entity.points
+                });
+            } else {
+                found_entity.position = new Vector(
+                    entity.position.x,
+                    entity.position.y
+                );
+
+                found_entity.direction = new Vector(
+                    entity.direction.x,
+                    entity.direction.y
+                );
+
+                found_entity.velocity = new Vector(
+                    entity.velocity.x,
+                    entity.velocity.y
+                );
+    
+                found_entity.radius = entity.radius;
+                found_entity.points = entity.points;
+                found_entity.is_alive = entity.is_alive;
+            }
+
+        });
+    }
+
+    /**
+     * Fires whenever a change occurs on a Particle
+     * 
+     * @param { firebase.database.DataSnapshot } snapshot 
+     */
+    handle_all_particles(snapshot) {
+        const particles_snapshot = snapshot.val();
+        if (particles_snapshot === null) return;
+        Object.keys(particles_snapshot).forEach(id => {
+            
+            var particle = particles_snapshot[id];
+
+            var found_particle = this.particles.find((p) => {
+                return  p.position.x === particle.position.x &&
+                        p.position.y === particle.position.y;
+            });
+
+            if (!found_particle) return;
+
+            found_particle.position = new Vector(
+                particle.position.x,
+                particle.position.y
             );
 
-            found_entity.radius = entity.radius;
-            found_entity.points = entity.points;
-            found_entity.is_alive = entity.is_alive;
+            found_particle.points = particle.points;
         });
     }
 
@@ -205,7 +294,6 @@ class Game {
         const added_player = snapshot.val();
 
         if (added_player.id === this.player.id) return;
-
         this.create_entity({
             id: added_player.id,
             name: added_player.name,
@@ -213,7 +301,7 @@ class Game {
                 added_player.position.x,
                 added_player.position.y
             ),
-            color: added_player.color,
+            color_rgb: added_player.color_rgb,
             radius: added_player.radius,
             direction: new Vector(
                 added_player.direction.x,
@@ -228,25 +316,67 @@ class Game {
     }
 
     /**
+     * Fires whenever a new Particle is added
+     * 
+     * @param { firebase.database.DataSnapshot } snapshot 
+     */
+    handle_new_particle(snapshot) {
+        const added_particle = snapshot.val();
+
+        var found_particle = this.particles.find((p) => {
+            return  p.position.x === added_particle.position.x &&
+                    p.position.y === added_particle.position.y;
+        });
+
+        if (found_particle) return;
+
+        this.create_particle_from({
+            position: new Vector(
+                added_particle.position.x,
+                added_particle.position.y
+            ),
+            color: added_particle.color,
+            radius: added_particle.radius,
+            points: added_particle.points
+        });
+    }
+
+    /**
      * Fires whenever a Player leaves
      * 
      * @param { firebase.database.DataSnapshot } snapshot 
      */
-    handle_player_left(snapshot) {
-        const removed_id = snapshot.val().id;
+    handle_player_removed(snapshot) {
+        const id = snapshot.val().id;
 
         const i = this.entities.findIndex(e => {
-            return e.id === removed_id;
+            return e.id === id;
         });
 
         this.entities.splice(i, 1);
+    }
+
+    /**
+     * Fires whenever a Particle is removed
+     * 
+     * @param { firebase.database.DataSnapshot } snapshot 
+     */
+    handle_particle_removed(snapshot) {
+        const particle = snapshot.val();
+        
+        const i = this.particles.findIndex(p => {
+            return  p.position.x === particle.position.x &&
+                    p.position.y === particle.position.y;
+        });
+
+        this.particles.splice(i, 1);
     }
 
     create_entity(entity_data) {
         var entity = new Entity(
             entity_data.name,
             entity_data.position,
-            entity_data.color,
+            entity_data.color_rgb,
             entity_data.radius
         );
 
@@ -258,7 +388,7 @@ class Game {
         this.entities.push(entity);
     }
 
-    create_particles(amount, color) {
+    create_particles(amount) {
         for (let i = 0; i < amount; i++) {
             var particle = this.create_particle(
                 Color.get_rgb_string(
@@ -272,10 +402,33 @@ class Game {
     }
 
     create_particle(color) {
-        return new Particle(new Vector(
+        var particle = new Particle(new Vector(
             Utilities.random(50, canvas_width - 50),
             Utilities.random(50, canvas_height - 50)
         ), color);
+
+        const particle_ref = firebase.database().ref('particles/' + particle.position.x + 'x' + particle.position.y);
+        
+        particle_ref.set({
+            position: particle.position,
+            color: particle.color,
+            radius: particle.radius,
+            points: particle.points
+        });
+
+        return particle;
+    }
+
+    create_particle_from(particle_data) {
+        var particle = new Particle(
+            particle_data.position,
+            particle_data.color,
+            particle_data.radius
+        );
+
+        particle.points = particle_data.points;
+
+        this.particles.push(particle);
     }
 
     /**
@@ -311,8 +464,8 @@ class Game {
                     this.entities.length > 0 ? this.entities : null
                 );
 
-                if (this.playerRef !== undefined) {
-                    this.playerRef.set(this.player);
+                if (this.player_ref !== undefined) {
+                    this.player_ref.set(this.player);
                 }
             }
         }, time);
