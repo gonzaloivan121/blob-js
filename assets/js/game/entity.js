@@ -208,6 +208,7 @@ class Entity {
     get_eaten() {
         this.is_alive = false;
         firebase.database().ref('players/' + this.id).remove();
+        delete this;
     }
 
     /**
