@@ -11,6 +11,7 @@ resize();
 window.addEventListener("resize", resize);
 
 load_info();
+show_login_modal();
 
 var game = new Game(60);
 
@@ -35,6 +36,7 @@ function start_game() {
         if (game.start_game(player_name, player_color)) {
             player_name_input.disabled = true;
             player_color_input.disabled = true;
+            hide_login_modal();
         }
     }
 }
@@ -217,6 +219,16 @@ function hide_info_modal() {
     var content = document.getElementById("content");
     info_modal.classList.remove("active");
     content.classList.remove("blur");
+}
+
+function show_login_modal() {
+    var login_modal = document.getElementById("login-modal");
+    login_modal.classList.add("active");
+}
+
+function hide_login_modal() {
+    var login_modal = document.getElementById("login-modal");
+    login_modal.classList.remove("active");
 }
 
 function show_save_confirmation() {

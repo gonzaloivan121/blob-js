@@ -76,14 +76,14 @@
     </div>
     <!-- END CONFIRMATION DIALBOX -->
     <!-- START UPLOAD MODAL -->
-    <div id="upload-modal" class="upload-modal box-shadow">
+    <!--<div id="upload-modal" class="upload-modal box-shadow">
         <div class="header">
             <div class="modal-close" onclick="hide_upload_modal()">X</div>
         </div>
         <div class="container">
             <input type="file" id="file_upload" accept="application/json" onchange="upload_settings(this)">
         </div>
-    </div>
+    </div>-->
     <!-- END UPLOAD MODAL -->
     <!-- START INFO MODAL -->
     <div id="info-modal" class="info-modal box-shadow">
@@ -100,6 +100,21 @@
         </div>
     </div>
     <!-- END INFO MODAL -->
+    <!-- START LOGIN MODAL -->
+    <div id="login-modal" class="info-modal box-shadow">
+        <div class="header" style="justify-content: center; align-items: center;">
+            <div class="title">Please, login</div>
+        </div>
+        <div class="container">
+            <p style="text-align: center;" id="info-description">
+                <!-- Insert info via script -->
+            </p>
+        </div>
+        <div class="footer" id="info-buttons">
+            <!-- Insert buttons via script -->
+        </div>
+    </div>
+    <!-- END LOGIN MODAL -->
     <!-- START FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
