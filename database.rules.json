@@ -1,0 +1,17 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": false,
+    "players": {
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "particles": {
+      ".write": "auth != null"
+    },
+    "obstacles": {
+      ".write": "auth != null"
+    }
+  }
+}

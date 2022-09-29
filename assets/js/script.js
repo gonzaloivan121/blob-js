@@ -17,7 +17,14 @@ var game = new Game(60);
 function start_game() {
     if (!game.started) {
         const player_name_input = document.getElementById("playername");
+        const player_color_input = document.getElementById("playercolor");
+        
         const player_name = player_name_input.value;
+        const player_color = {
+            r: parseInt(player_color_input.value.substr(1, 2), 16),
+            g: parseInt(player_color_input.value.substr(3, 2), 16),
+            b: parseInt(player_color_input.value.substr(5, 2), 16)
+        }
 
         if (!player_name_input.checkValidity()) {
             player_name_input.reportValidity();
@@ -25,8 +32,9 @@ function start_game() {
             return;
         }
 
-        if (game.start_game(player_name)) {
+        if (game.start_game(player_name, player_color)) {
             player_name_input.disabled = true;
+            player_color_input.disabled = true;
         }
     }
 }

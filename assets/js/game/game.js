@@ -83,13 +83,11 @@ class Game {
      * Create Particles, Entities and the Player.
      * Start interval for the first time
      */
-    start_game(player_name = null) {
-        if (player_name === null) return;
-        this.create_particles(100, "blue");
-        this.create_particles(100, "white");
-        this.create_particles(100, "yellow");
+    start_game(player_name = null, player_color = null) {
+        if (player_name === null || player_color === null) return;
 
-        this.player = this.create_player(player_name, "green");
+        this.create_particles(300);
+        this.player = this.create_player(player_name, player_color);
 
         var started = false;
         
@@ -262,7 +260,13 @@ class Game {
 
     create_particles(amount, color) {
         for (let i = 0; i < amount; i++) {
-            var particle = this.create_particle(color);
+            var particle = this.create_particle(
+                Color.get_rgb_string(
+                    Utilities.random(0, 255),
+                    Utilities.random(0, 255),
+                    Utilities.random(0, 255)
+                )
+            );
             this.particles.push(particle);
         }
     }
@@ -319,10 +323,25 @@ class Game {
     }
 
     draw_background() {
-        const gradient = context.createLinearGradient(0, 0, 0, canvas_height);
-        gradient.addColorStop(0, "black");
-        gradient.addColorStop(1, "black");
-        context.fillStyle = gradient;
+        context.fillStyle = "#f3faff";
         context.fillRect(0, 0, canvas_width, canvas_height);
+
+        context.beginPath();
+        context.strokeStyle = "#eaf1f5";
+        context.lineWidth = 2;
+
+        const grid_size = 75;
+
+        for (let x = canvas_width / grid_size; x < canvas_width; x += canvas_width / grid_size) {
+            context.moveTo(x, 0);
+            context.lineTo(x, canvas_height);
+        }
+
+        for (let y = canvas_height / grid_size; y < canvas_height; y += canvas_width / grid_size) {
+            context.moveTo(0, y);
+            context.lineTo(canvas_width, y);
+        }
+
+        context.stroke();
     }
 }

@@ -87,11 +87,11 @@ ul, ol {
 
 .text-input-label {
     font-size: 1.2rem;
-    margin-left: 1rem;
-    margin-top: 0.75rem;
     display: block;
     transition: all 0.3s;
     transform: translateY(0rem);
+    padding: 0.75rem 1rem;
+    margin: 5px 0;
 }
 
 .text-input {
@@ -107,6 +107,13 @@ ul, ol {
 }
 
 .text-input:placeholder-shown + .text-input-label {
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transform: translateY(-4rem);
+  transform: translateY(-4rem);
+}
+
+input[type="color"]:focus + .text-input-label {
   opacity: 0;
   visibility: hidden;
   -webkit-transform: translateY(-4rem);

@@ -27,13 +27,26 @@ class Entity {
          * @public
          */
         this.name = name;
+
         /**
          *  The Vector position of the Entity
          * @type { Vector }
          * @public
          */
         this.position = position;
-        this.color = color;
+
+        this.border_color = Color.get_rgb_string(
+            color.r - 20,
+            color.g - 20,
+            color.b - 20
+        );
+
+        this.color = Color.get_rgb_string(
+            color.r,
+            color.g,
+            color.b
+        );
+
         this.radius = radius;
     }
 
@@ -52,8 +65,15 @@ class Entity {
      * Draw the Entity
      */
     draw() {
+        this.draw_circle();
+        this.draw_name();
+        this.draw_direction_arrow();
+    }
+
+    draw_circle() {
         context.beginPath();
         context.fillStyle = this.color;
+        context.strokeStyle = this.border_color;
         context.arc(
             this.position.x,
             this.position.y,
@@ -61,12 +81,38 @@ class Entity {
             0,
             2 * Math.PI
         );
+        context.lineWidth = 5;
         context.fill();
+        context.stroke();
+        context.closePath();
+    }
 
+    draw_name() {
         context.textAlign = "center";
         context.fillStyle = "white";
-        context.font = this.radius + "px Arial";
+        context.strokeStyle = "black";
+        context.lineWidth = 1;
+        context.font = "bold " + this.radius + "px Arial";
         context.fillText(this.name, this.position.x, this.position.y + this.radius * .25);
+        context.strokeText(this.name, this.position.x, this.position.y + this.radius * .25);
+    }
+
+    draw_direction_arrow() {
+        var h = this.radius * (Math.sqrt(3) / 2);
+        const arrow_position = Vector.sum(this.position, Vector.multiply(this.direction, new Vector(this.radius * 3, this.radius * 3)));
+
+        context.beginPath();
+        context.strokeStyle = "#ff0000";
+
+        context.moveTo(arrow_position.x, arrow_position.y + (-h / 2));
+        context.lineTo(arrow_position.x + (-this.radius / 2), arrow_position.y + (h / 2));
+        context.lineTo(arrow_position.x + (this.radius / 2), arrow_position.y + (h / 2));
+        context.lineTo(arrow_position.x, arrow_position.y + (-h / 2));
+        
+        context.stroke();
+        context.fill();
+        
+        context.closePath();
     }
 
     /**

@@ -40,10 +40,16 @@
         </div>
         <!-- START PANNEL -->
         <div class="pannel" id="pannel">
-            <div class="title">Life Settings</div>
+            <div class="title">Blob JS</div>
             <div class="settings">
-                <input type="text" name="playername" class="text-input" id="playername" placeholder="Player name" required />
-                <label for="playername" class="text-input-label">Player name</label>
+                <div class="setting">
+                    <input type="text" name="playername" class="text-input" id="playername" placeholder="Player name" required />
+                    <label for="playername" class="text-input-label">Player name</label>
+                </div>
+                <div class="setting">
+                    <input type="color" name="playercolor" class="text-input" id="playercolor" required />
+                    <label for="playercolor" class="text-input-label">Player color</label>
+                </div>
             </div>
             <div class="buttons">
                 <button class="button box-shadow" onclick="start_game()">Start Game</button>
