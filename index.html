@@ -118,12 +118,13 @@
     </div>
     <!-- END LOGIN MODAL -->
     <!-- START FIREBASE -->
+    <script src="./secret.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         // NOTE - INCLUDE YOUR FIREBASE CONFIG HERE FOR ANYTHING TO WORK:
-        const firebaseConfig = {
+        /*const firebaseConfig = {
             apiKey: "AIzaSyBg9pJvV3UMrdageQxS2zQJDQgoIIktFgs",
             authDomain: "blob-js.firebaseapp.com",
             databaseURL: "https://blob-js-default-rtdb.europe-west1.firebasedatabase.app",
@@ -131,6 +132,15 @@
             storageBucket: "blob-js.appspot.com",
             messagingSenderId: "787407800201",
             appId: "1:787407800201:web:859cb3dc15ba5db6ab0358"
+        };*/
+        const firebaseConfig = {
+            apiKey: Secret.apiKey,
+            authDomain: Secret.authDomain,
+            databaseURL: Secret.databaseURL,
+            projectId: Secret.projectId,
+            storageBucket: Secret.storageBucket,
+            messagingSenderId: Secret.messagingSenderId,
+            appId: Secret.appId
         };
         firebase.initializeApp(firebaseConfig);
     </script>
