@@ -71,4 +71,12 @@ class Color {
 
         return { rgb: rgb, string: rgb_string };
     }
+
+    static hex_to_rgb(hex) {
+        return {
+            r: parseInt(hex.substr(1, 2), 16),
+            g: parseInt(hex.substr(3, 2), 16),
+            b: parseInt(hex.substr(5, 2), 16)
+        };
+    }
 }
