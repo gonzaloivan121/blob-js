@@ -81,7 +81,9 @@ function leave_game() {
                 "Keep looking",
                 "Close it",
                 hide_confirmation_dialbox,
-                window.close
+                () => {
+                    window.close()
+                }
             )
         }, 500);
         start_game_button.style.display = "none";
@@ -232,11 +234,23 @@ function reset_skin() {
 }
 
 canvas.onmousemove = e => {
+    mouse_move(e);
+};
+
+canvas.onmousedown = e => {
+    mouse_down(e);
+}
+
+canvas.onmouseup = e => {
+    mouse_up(e);
+}
+
+function mouse_move(e) {
     if (Input.mouse.left.down) {
         const rect = canvas.getBoundingClientRect(),
             screen_x = Math.floor(e.clientX - rect.left),
             screen_y = Math.floor(e.clientY - rect.top);
-        
+
         const position = new Vector(screen_x, screen_y);
 
         if (game.player !== null) {
@@ -244,9 +258,9 @@ canvas.onmousemove = e => {
             game.set_player_direction(direction);
         }
     }
-};
+}
 
-canvas.onmousedown = e => {
+function mouse_down(e) {
     switch (e.button) {
         case 0:
             Input.mouse.left.down = true;
@@ -260,7 +274,7 @@ canvas.onmousedown = e => {
     }
 }
 
-canvas.onmouseup = e => {
+function mouse_up(e) {
     switch (e.button) {
         case 0:
             Input.mouse.left.down = false;
