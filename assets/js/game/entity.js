@@ -223,7 +223,6 @@ class Entity {
      * @param { Particle } particle - The Particle to eat
      */
     eat_particle(particle) {
-        console.log("The", particle, "has been eaten by the", this)
         this.grow(particle.points * 0.001);
         this.points += particle.points;
         particle.get_eaten(this.id);
@@ -235,7 +234,6 @@ class Entity {
      * @param { Entity } entity - The Entity to eat
      */
     eat_entity(entity) {
-        console.log("The", entity, "has been eaten by the", this)
         this.grow(entity.radius);
         this.points += entity.points;
         entity.get_eaten();

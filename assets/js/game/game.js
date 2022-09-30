@@ -129,21 +129,7 @@ class Game {
             if (user) {
                 this.player.id = user.uid;
                 this.player_ref = firebase.database().ref('players/' + this.player.id);
-
-                this.player_ref.set({
-                    id: this.player.id,
-                    name: this.player.name,
-                    position: this.player.position,
-                    direction: this.player.direction,
-                    velocity: this.player.velocity,
-                    color: this.player.color,
-                    border_color: this.player.border_color,
-                    color_rgb: this.player.color_rgb,
-                    radius: this.player.radius,
-                    points: this.player.points,
-                    skin: this.player.skin
-                });
-
+                this.player_ref.set(this.player);
                 this.generate_player_board(this.player);
 
                 // Remove me from firebase when I disconnect
@@ -210,37 +196,33 @@ class Game {
             var entity = entities_snapshot[id];
             this.update_player_board(entity);
 
-            if (entity.id === this.player.id) return;
+
+            if (this.player !== null && entity.id === this.player.id) return;
 
             var found_entity = this.entities.find((e) => {
                 return e.id === entity.id;
             });
-            
-            if (!found_entity) return;
 
-            found_entity.position = new Vector(
-                entity.position.x,
-                entity.position.y
-            );
+            const entity_data = this.generate_entity_data(entity);
 
-            found_entity.direction = new Vector(
-                entity.direction.x,
-                entity.direction.y
-            );
+            if (!found_entity) {
+                console.log("entity not found")
+                //this.create_entity(entity_data);
+                return;
+            }
 
-            found_entity.velocity = new Vector(
-                entity.velocity.x,
-                entity.velocity.y
-            );
-
-            found_entity.color_rgb = entity.color_rgb;
-            found_entity.name = entity.name;
-            found_entity.border_color = entity.border_color;
-            found_entity.color = entity.color;
-            found_entity.radius = entity.radius;
-            found_entity.skin = entity.skin;
-            found_entity.points = entity.points;
-            found_entity.is_alive = entity.is_alive;
+            found_entity.id = entity_data.id;
+            found_entity.position = entity_data.position;
+            found_entity.direction = entity_data.direction;
+            found_entity.velocity = entity_data.velocity;
+            found_entity.color_rgb = entity_data.color_rgb;
+            found_entity.name = entity_data.name;
+            found_entity.border_color = entity_data.border_color;
+            found_entity.color = entity_data.color;
+            found_entity.radius = entity_data.radius;
+            found_entity.skin = entity_data.skin;
+            found_entity.points = entity_data.points;
+            found_entity.is_alive = entity_data.is_alive;
         });
     }
 
@@ -260,16 +242,17 @@ class Game {
                         p.position.y === particle.position.y;
             });
 
-            if (!found_particle) return;
+            const particle_data = this.generate_particle_data(particle);
 
-            found_particle.position = new Vector(
-                particle.position.x,
-                particle.position.y
-            );
+            if (!found_particle) {
+                //this.create_particle_from(particle_data);
+                return;
+            };
 
-            found_particle.color = particle.color;
-            found_particle.radius = particle.radius;
-            found_particle.points = particle.points;
+            found_particle.position = particle_data.position;
+            found_particle.color = particle_data.color;
+            found_particle.radius = particle_data.radius;
+            found_particle.points = particle_data.points;
         });
     }
 
@@ -294,31 +277,49 @@ class Game {
      */
     handle_new_player(snapshot) {
         const added_player = snapshot.val();
-
         if (added_player.id === this.player.id) return;
-        this.create_entity({
-            id: added_player.id,
-            name: added_player.name,
+        const entity_data = this.generate_entity_data(added_player);
+        this.create_entity(entity_data);
+        console.log("new player")
+        this.generate_player_board(added_player);
+    }
+
+    generate_entity_data(entity) {
+        return {
+            id: entity.id,
+            name: entity.name,
             position: new Vector(
-                added_player.position.x,
-                added_player.position.y
+                entity.position.x,
+                entity.position.y
             ),
-            color_rgb: added_player.color_rgb,
-            radius: added_player.radius,
-            skin: added_player.skin,
             direction: new Vector(
-                added_player.direction.x,
-                added_player.direction.y
+                entity.direction.x,
+                entity.direction.y
             ),
             velocity: new Vector(
-                added_player.velocity.x,
-                added_player.velocity.y
+                entity.velocity.x,
+                entity.velocity.y
             ),
-            points: added_player.points,
-            is_alive: added_player.is_alive
-        });
+            color: entity.color,
+            color_rgb: entity.color_rgb,
+            border_color: entity.border_color,
+            radius: entity.radius,
+            skin: entity.skin,
+            points: entity.points,
+            is_alive: entity.is_alive
+        }
+    }
 
-        this.generate_player_board(added_player);
+    generate_particle_data(particle) {
+        return {
+            position: new Vector(
+                particle.position.x,
+                particle.position.y
+            ),
+            color: particle.color,
+            radius: particle.radius,
+            points: particle.points
+        }
     }
 
     /**
@@ -335,16 +336,8 @@ class Game {
         });
 
         if (!found_particle) return;
-
-        this.create_particle_from({
-            position: new Vector(
-                added_particle.position.x,
-                added_particle.position.y
-            ),
-            color: added_particle.color,
-            radius: added_particle.radius,
-            points: added_particle.points
-        });
+        const particle_data = this.generate_particle_data(added_particle);
+        this.create_particle_from(particle_data);
     }
 
     /**
@@ -354,6 +347,11 @@ class Game {
      */
     handle_player_removed(snapshot) {
         const id = snapshot.val().id;
+
+        if (this.player.id === id) {
+            this.player = null;
+            return;
+        }
 
         const i = this.entities.findIndex(e => {
             return e.id === id;
@@ -397,23 +395,15 @@ class Game {
 
     create_particles(amount) {
         for (let i = 0; i < amount; i++) {
-            this.particles.push(this.create_particle());
+            this.create_particle();
         }
     }
 
     create_particle() {
-        var particle = new Particle();
-
+        const particle = new Particle();
         const particle_ref = firebase.database().ref('particles/' + particle.position.x + 'x' + particle.position.y);
-        
-        particle_ref.set({
-            position: particle.position,
-            color: particle.color,
-            radius: particle.radius,
-            points: particle.points
-        });
-
-        return particle;
+        particle_ref.set(particle);
+        this.particles.push(particle);
     }
 
     create_particle_from(particle_data) {
@@ -533,7 +523,7 @@ class Game {
                 });
             }
 
-            if (this.player !== null) {
+            if (this.player !== null && this.player.is_alive) {
                 this.player.update();
                 this.player.check_collision(
                     this.particles.length > 0 ? this.particles : null,
@@ -555,7 +545,7 @@ class Game {
         const time = Utilities.random(1, 50) * 100;
 
         setTimeout(() => {
-            this.particles.push(this.create_particle());
+            this.create_particle();
             this.spawn_random_particle();
         }, time);
     }
