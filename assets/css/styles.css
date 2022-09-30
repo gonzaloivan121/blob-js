@@ -14,6 +14,7 @@
 
 html, body {
     margin: 0;
+    height: 100%;
 }
 
 body {
@@ -141,7 +142,7 @@ ul, ol {
 }
 
 .dropdown:hover .dropdown-content {
-    height: calc(300% + 0.14rem);
+    height: 300%
 }
 
 .dropdown:hover .arrow {
