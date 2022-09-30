@@ -245,8 +245,20 @@ canvas.onmouseup = e => {
     mouse_up(e);
 }
 
+canvas.ontouchmove = e => {
+    mouse_move(e.touches[0]);
+}
+
+canvas.ontouchstart = e => {
+    Input.touch.down = true;
+}
+
+canvas.ontouchend = e => {
+    Input.touch.down = false;
+}
+
 function mouse_move(e) {
-    if (Input.mouse.left.down) {
+    if (Input.mouse.left.down || Input.touch.down) {
         const rect = canvas.getBoundingClientRect(),
             screen_x = Math.floor(e.clientX - rect.left),
             screen_y = Math.floor(e.clientY - rect.top);

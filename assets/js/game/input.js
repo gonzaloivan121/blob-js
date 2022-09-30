@@ -10,4 +10,8 @@ class Input {
             down: false
         }
     }
+
+    static touch = {
+        down: false
+    }
 }
