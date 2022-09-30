@@ -84,13 +84,26 @@ class Entity {
         if (this.skin !== null) {
             const image = new Image();
             image.src = this.skin;
+
+            context.save();
+            context.beginPath();
+            context.arc(
+                this.position.x,
+                this.position.y,
+                this.radius * 2,
+                0,
+                Math.PI * 2
+            );
+            context.stroke();
+            context.clip();
             context.drawImage(
                 image,
-                this.position.x - this.radius * 1.5,
-                this.position.y - this.radius * 1.5,
-                this.radius * 3,
-                this.radius * 3
+                this.position.x - this.radius * 2,
+                this.position.y - this.radius * 2,
+                this.radius * 4,
+                this.radius * 4
             );
+            context.restore();
         }
     }
 
@@ -140,9 +153,9 @@ class Entity {
         this.color_rgb = color;
 
         this.border_color = Color.get_rgb_string(
-            color.r - 20,
-            color.g - 20,
-            color.b - 20
+            color.r - 50,
+            color.g - 50,
+            color.b - 50
         );
 
         this.color = Color.get_rgb_string(
