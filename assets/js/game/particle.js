@@ -6,22 +6,22 @@
  * @public
  */
 class Particle {
-    /**
-     * Create a new Particle
-     * 
-     * @param { Vector } position - The Vector position of the Particle
-     * @param { string } color - The color string of the Particle
-     * @param { number } radius - The radius of the Particle
-     */
-    constructor(position, color, radius = 2) {
+    constructor() {
         /**
          *  The Vector position of the Particle
          * @type { Vector }
          * @public
          */
-        this.position = position;
-        this.color = color;
-        this.radius = radius;
+        this.position = new Vector(
+            Utilities.random(50, canvas_width - 50),
+            Utilities.random(50, canvas_height - 50)
+        );
+        this.color = Color.get_rgb_string(
+            Utilities.random(0, 255),
+            Utilities.random(0, 255),
+            Utilities.random(0, 255)
+        );
+        this.radius = 2;
         this.points = Utilities.random(50, 150);
     }
 
