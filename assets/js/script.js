@@ -30,6 +30,7 @@ function start_game() {
         if (game.start_game(player_info.name, player_info.color, player_info.skin)) {
             hide_login_modal();
             toggle_pannel();
+            show_leaderboard();
             start_game_button.innerHTML = "Leave Game";
             start_game_button.onclick = show_leave_game_confirmation;
         }
@@ -312,11 +313,11 @@ function show_confirmation_dialbox(
     confirm_action = () => { },
     decline_action = hide_confirmation_dialbox
 ) {
-    var confirmation_dialbox = document.getElementById("confirmation-dialbox");
-    var confirmation_confirm = document.getElementById("confirmation-confirm");
-    var confirmation_decline = document.getElementById("confirmation-decline");
-    var confirmation_title = document.getElementById("confirmation-title");
-    var content = document.getElementById("content");
+    const confirmation_dialbox = document.getElementById("confirmation-dialbox");
+    const confirmation_confirm = document.getElementById("confirmation-confirm");
+    const confirmation_decline = document.getElementById("confirmation-decline");
+    const confirmation_title = document.getElementById("confirmation-title");
+    const content = document.getElementById("content");
 
     content.classList.add("blur");
     confirmation_dialbox.classList.add("active");
@@ -329,11 +330,11 @@ function show_confirmation_dialbox(
 }
 
 function hide_confirmation_dialbox() {
-    var confirmation_dialbox = document.getElementById("confirmation-dialbox");
-    var confirmation_confirm = document.getElementById("confirmation-confirm");
-    var confirmation_decline = document.getElementById("confirmation-decline");
-    var confirmation_title = document.getElementById("confirmation-title");
-    var content = document.getElementById("content");
+    const confirmation_dialbox = document.getElementById("confirmation-dialbox");
+    const confirmation_confirm = document.getElementById("confirmation-confirm");
+    const confirmation_decline = document.getElementById("confirmation-decline");
+    const confirmation_title = document.getElementById("confirmation-title");
+    const content = document.getElementById("content");
 
     content.classList.remove("blur");
     confirmation_dialbox.classList.remove("active");
@@ -347,27 +348,37 @@ function hide_confirmation_dialbox() {
 }
 
 function show_info_modal() {
-    var info_modal = document.getElementById("info-modal");
-    var content = document.getElementById("content");
+    const info_modal = document.getElementById("info-modal");
+    const content = document.getElementById("content");
     info_modal.classList.add("active");
     content.classList.add("blur");
 }
 
 function hide_info_modal() {
-    var info_modal = document.getElementById("info-modal");
-    var content = document.getElementById("content");
+    const info_modal = document.getElementById("info-modal");
+    const content = document.getElementById("content");
     info_modal.classList.remove("active");
     content.classList.remove("blur");
 }
 
 function show_login_modal() {
-    var login_modal = document.getElementById("login-modal");
+    const login_modal = document.getElementById("login-modal");
     login_modal.classList.add("active");
 }
 
 function hide_login_modal() {
-    var login_modal = document.getElementById("login-modal");
+    const login_modal = document.getElementById("login-modal");
     login_modal.classList.remove("active");
+}
+
+function show_leaderboard() {
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.classList.add("active");
+}
+
+function hide_leaderboard() {
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.classList.remove("active");
 }
 
 function show_save_confirmation() {

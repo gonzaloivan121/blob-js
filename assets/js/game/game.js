@@ -143,6 +143,8 @@ class Game {
                     skin: this.player.skin
                 });
 
+                this.generate_player_board(this.player);
+
                 // Remove me from firebase when I disconnect
                 this.player_ref.onDisconnect().remove(onComplete => {
                     if (onComplete === null) { // Removed successfully
@@ -205,12 +207,14 @@ class Game {
         if (entities_snapshot === null) return;
         Object.keys(entities_snapshot).forEach(id => {
             var entity = entities_snapshot[id];
+            this.update_player_board(entity);
+
             if (entity.id === this.player.id) return;
 
             var found_entity = this.entities.find((e) => {
                 return e.id === entity.id;
             });
-
+            
             if (!found_entity) return;
 
             found_entity.position = new Vector(
@@ -227,7 +231,6 @@ class Game {
                 entity.velocity.x,
                 entity.velocity.y
             );
-
 
             found_entity.color_rgb = entity.color_rgb;
             found_entity.name = entity.name;
@@ -310,8 +313,11 @@ class Game {
                 added_player.velocity.x,
                 added_player.velocity.y
             ),
-            points: added_player.points
+            points: added_player.points,
+            is_alive: added_player.is_alive
         });
+
+        this.generate_player_board(added_player);
     }
 
     /**
@@ -383,6 +389,7 @@ class Game {
         entity.direction = entity_data.direction;
         entity.velocity = entity_data.velocity;
         entity.points = entity_data.points;
+        entity.is_alive = entity_data.is_alive;
 
         this.entities.push(entity);
     }
@@ -428,6 +435,78 @@ class Game {
         particle.points = particle_data.points;
 
         this.particles.push(particle);
+    }
+
+    generate_player_board(player) {
+        const player_boards = document.getElementById("player-boards");
+
+        const board = document.createElement("div");
+        const circle = document.createElement("div");
+        const skin = document.createElement("img");
+        const name = document.createElement("div");
+        const points = document.createElement("div");
+
+        board.classList.add("player-board");
+        board.classList.add("drop-shadow");
+        board.id = player.id;
+
+        circle.classList.add("circle");
+        skin.classList.add("player-skin");
+        name.classList.add("player-name");
+        points.classList.add("player-points");
+
+        circle.style.borderColor = player.border_color;
+        circle.style.backgroundColor = player.color;
+        skin.src = player.skin;
+
+        if (player.skin === null || player.skin === undefined) {
+            skin.style.visibility = "hidden";
+        }
+        
+        name.innerHTML = player.name;
+        points.innerHTML = player.points;
+
+        circle.prepend(skin);
+
+        board.prepend(points);
+        board.prepend(name);
+        board.prepend(circle);
+
+        player_boards.appendChild(board);
+    }
+
+    update_player_board(player) {
+        const board = document.getElementById(player.id);
+        const circle = board.querySelector(".circle");
+        const skin = circle.querySelector(".player-skin");
+        const name = board.querySelector(".player-name");
+        const points = board.querySelector(".player-points");
+
+        if (circle.style.borderColor !== player.border_color) {
+            circle.style.borderColor = player.border_color;
+        }
+
+        if (circle.style.backgroundColor !== player.color) {
+            circle.style.backgroundColor = player.color;
+        }
+
+        if (skin.src !== player.skin) {
+            skin.src = player.skin;
+            if (player.skin !== undefined) {
+                skin.style.visibility = "visible";
+            } else {
+                skin.style.visibility = "hidden";
+            }
+        }
+
+        if (name.innerHTML !== player.name) {
+            name.innerHTML = player.name;
+        }
+
+        if (points.innerHTML !== player.points.toString()) {
+            points.innerHTML = player.points;
+            board.style.order = -player.points;
+        }
     }
 
     /**
