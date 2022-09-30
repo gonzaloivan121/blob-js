@@ -92,6 +92,10 @@
         "icon": "assets/img/skins/sir.png"
     },
     {
+        "name": "Spiderman",
+        "icon": "assets/img/skins/spiderman.png"
+    },
+    {
         "name": "Spooderman",
         "icon": "assets/img/skins/spooderman.png"
     },
