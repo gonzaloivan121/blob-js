@@ -1,14 +1,122 @@
 [
     {
-        "name": "Spooderman",
-        "icon": "assets/img/skins/Spooderman.png"
+        "name": "8 Ball",
+        "icon": "assets/img/skins/8ball.png"
     },
     {
-        "name": "Sanic",
-        "icon": "assets/img/skins/Sanic.png"
+        "name": "Argentina",
+        "icon": "assets/img/skins/argentina.png"
+    },
+    {
+        "name": "Ayy Lmao",
+        "icon": "assets/img/skins/ayy-lmao.png"
+    },
+    {
+        "name": "Canada",
+        "icon": "assets/img/skins/canada.png"
+    },
+    {
+        "name": "CIA",
+        "icon": "assets/img/skins/cia.png"
+    },
+    {
+        "name": "Doge",
+        "icon": "assets/img/skins/doge.png"
+    },
+    {
+        "name": "Earth",
+        "icon": "assets/img/skins/earth.png"
+    },
+    {
+        "name": "European Union",
+        "icon": "assets/img/skins/european-union.png"
+    },
+    {
+        "name": "Facebook",
+        "icon": "assets/img/skins/facebook.png"
+    },
+    {
+        "name": "France",
+        "icon": "assets/img/skins/france.png"
+    },
+    {
+        "name": "Germany",
+        "icon": "assets/img/skins/germany.png"
+    },
+    {
+        "name": "India",
+        "icon": "assets/img/skins/india.png"
+    },
+    {
+        "name": "Ireland",
+        "icon": "assets/img/skins/ireland.png"
+    },
+    {
+        "name": "Italy",
+        "icon": "assets/img/skins/italy.png"
+    },
+    {
+        "name": "Mars",
+        "icon": "assets/img/skins/mars.png"
+    },
+    {
+        "name": "Moon",
+        "icon": "assets/img/skins/moon.png"
+    },
+    {
+        "name": "Nasa",
+        "icon": "assets/img/skins/nasa.png"
     },
     {
         "name": "Pepe",
-        "icon": "assets/img/skins/Pepe.png"
+        "icon": "assets/img/skins/pepe.png"
+    },
+    {
+        "name": "Pokerface",
+        "icon": "assets/img/skins/pokerface.png"
+    },
+    {
+        "name": "Reddit",
+        "icon": "assets/img/skins/reddit.png"
+    },
+    {
+        "name": "Sanic",
+        "icon": "assets/img/skins/sanic.png"
+    },
+    {
+        "name": "Sanik",
+        "icon": "assets/img/skins/sanik.png"
+    },
+    {
+        "name": "Sir",
+        "icon": "assets/img/skins/sir.png"
+    },
+    {
+        "name": "Spooderman",
+        "icon": "assets/img/skins/spooderman.png"
+    },
+    {
+        "name": "Steam",
+        "icon": "assets/img/skins/steam.png"
+    },
+    {
+        "name": "Tumblr",
+        "icon": "assets/img/skins/tumblr.png"
+    },
+    {
+        "name": "Turkey",
+        "icon": "assets/img/skins/turkey.png"
+    },
+    {
+        "name": "USA",
+        "icon": "assets/img/skins/usa.png"
+    },
+    {
+        "name": "Wojak",
+        "icon": "assets/img/skins/wojak.png"
+    },
+    {
+        "name": "Yaranaika",
+        "icon": "assets/img/skins/yaranaika.png"
     }
 ]
