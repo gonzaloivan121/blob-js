@@ -135,8 +135,8 @@ function load_skins() {
 function generate_info_modal(info = null) {
     if (info === null) return;
 
-    var info_description_element = document.getElementById("info-description");
-    var info_buttons_element = document.getElementById("info-buttons");
+    const info_description_element = document.getElementById("info-description");
+    const info_buttons_element = document.getElementById("info-buttons");
 
     info_description_element.innerText = info.description;
 
@@ -215,7 +215,7 @@ function set_skin(skin) {
     reset_skin_button.classList.add("active");
 
     if (game.started) {
-        game.set_player_skin(skin_image.src);
+        game.player.skin = skin_image.src;
     }
 }
 
@@ -230,7 +230,7 @@ function reset_skin() {
     reset_skin_button.classList.remove("active");
 
     if (game.started) {
-        game.set_player_skin("");
+        game.player.skin = "";
     }
 }
 
@@ -381,24 +381,8 @@ function hide_leaderboard() {
     leaderboard.classList.remove("active");
 }
 
-function show_save_confirmation() {
-    show_confirmation_dialbox(
-        'Do you want to save these settings?',
-        'Yes, save them!',
-        'No, I don\'t think I will...',
-        () => {
-            save_settings();
-            hide_confirmation_dialbox();
-        },
-        () => {
-            createToast('Settings not saved', TOAST_TYPE.WARNING);
-            hide_confirmation_dialbox();
-        }
-    );
-}
-
 function toggle_pannel() {
-    var pannel = document.getElementById("pannel");
+    const pannel = document.getElementById("pannel");
     if (pannel.classList.contains("active")) {
         pannel.classList.remove("active");
     } else {
