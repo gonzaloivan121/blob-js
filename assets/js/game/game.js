@@ -211,49 +211,32 @@ class Game {
                 return e.id === entity.id;
             });
 
-            if (!found_entity) {
-                this.create_entity({
-                    id: entity.id,
-                    name: entity.name,
-                    position: new Vector(
-                        entity.position.x,
-                        entity.position.y
-                    ),
-                    color_rgb: entity.color_rgb,
-                    radius: entity.radius,
-                    skin: entity.skin,
-                    direction: new Vector(
-                        entity.direction.x,
-                        entity.direction.y
-                    ),
-                    velocity: new Vector(
-                        entity.velocity.x,
-                        entity.velocity.y
-                    ),
-                    points: entity.points
-                });
-            } else {
-                found_entity.position = new Vector(
-                    entity.position.x,
-                    entity.position.y
-                );
+            if (!found_entity) return;
 
-                found_entity.direction = new Vector(
-                    entity.direction.x,
-                    entity.direction.y
-                );
+            found_entity.position = new Vector(
+                entity.position.x,
+                entity.position.y
+            );
 
-                found_entity.velocity = new Vector(
-                    entity.velocity.x,
-                    entity.velocity.y
-                );
-    
-                found_entity.radius = entity.radius;
-                found_entity.skin = entity.skin;
-                found_entity.points = entity.points;
-                found_entity.is_alive = entity.is_alive;
-            }
+            found_entity.direction = new Vector(
+                entity.direction.x,
+                entity.direction.y
+            );
 
+            found_entity.velocity = new Vector(
+                entity.velocity.x,
+                entity.velocity.y
+            );
+
+
+            found_entity.color_rgb = entity.color_rgb;
+            found_entity.name = entity.name;
+            found_entity.border_color = entity.border_color;
+            found_entity.color = entity.color;
+            found_entity.radius = entity.radius;
+            found_entity.skin = entity.skin;
+            found_entity.points = entity.points;
+            found_entity.is_alive = entity.is_alive;
         });
     }
 
@@ -266,7 +249,6 @@ class Game {
         const particles_snapshot = snapshot.val();
         if (particles_snapshot === null) return;
         Object.keys(particles_snapshot).forEach(id => {
-            
             var particle = particles_snapshot[id];
 
             var found_particle = this.particles.find((p) => {
@@ -281,6 +263,8 @@ class Game {
                 particle.position.y
             );
 
+            found_particle.color = particle.color;
+            found_particle.radius = particle.radius;
             found_particle.points = particle.points;
         });
     }
