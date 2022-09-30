@@ -68,24 +68,51 @@ ul, ol {
 .dropdown-button {
     background-color: transparent;
     padding: 7px;
-    font-size: 16px;
+    font-size: 18px;
     border: none;
     float: right;
     cursor: pointer;
+    line-height: 18px;
+    border-radius: .2rem;
+}
+
+.dropdown-button.reset {
+    opacity: 0;
+    pointer-events: none;
+    transition: background-color .2s ease-in-out, 
+                transform .2s ease-in-out,
+                opacity .2s ease-in-out;
+}
+
+.dropdown-button.reset.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.dropdown-button.reset:hover {
+    background-color: #eeeeee;
+    transform: scale(1.1);
+    font-weight: 600;
+}
+
+.dropdown-button.arrow {
+    transition: transform .2s ease-in-out;
 }
 
 .dropdown-content {
-    display: none;
+    height: 0;
+    overflow-y: scroll;
     position: absolute;
-    background-color: #f9f9f9;
+    background-color: rgb(255, 255, 255);
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     width: 100%;
     left: 0;
     top: 90%;
     border-bottom-left-radius: 0.2rem;
     border-bottom-right-radius: 0.2rem;
+    transition: height .2s ease-in-out,
+                opacity .2s ease-in-out;
 }
 
 .dropdown-content .dropdown-option {
@@ -114,7 +141,11 @@ ul, ol {
 }
 
 .dropdown:hover .dropdown-content {
-    display: block;
+    height: calc(300% + 0.14rem);
+}
+
+.dropdown:hover .arrow {
+    transform: rotate(180deg);
 }
 
 .pannel {
@@ -143,6 +174,10 @@ ul, ol {
     padding: 15px 0px;
 }
 
+.text-input#playername {
+    cursor: auto;
+}
+
 .text-input-label {
     font-size: 1.2rem;
     display: block;
@@ -150,6 +185,8 @@ ul, ol {
     transform: translateY(0rem);
     padding: 0.75rem 1rem;
     margin: 5px 0;
+    min-height: 32px;
+    line-height: 32px;
 }
 
 .text-input {
@@ -163,6 +200,7 @@ ul, ol {
     width: calc(100% - 2rem);
     transition: all 0.3s;
     cursor: pointer;
+    min-height: 32px;
 }
 
 .text-input:placeholder-shown + .text-input-label {
@@ -365,7 +403,6 @@ input[type="color"]:focus + .text-input-label {
 }
 
 .confirmation-dialbox,
-.upload-modal,
 .info-modal {
     position: absolute;
     width: 50%;
@@ -381,7 +418,6 @@ input[type="color"]:focus + .text-input-label {
     transition: transform .5s ease-in-out, opacity .5s ease-in-out;
 }
 
-.upload-modal,
 .info-modal {
     width: 50%;
     height: 50%;
@@ -396,8 +432,6 @@ input[type="color"]:focus + .text-input-label {
 .confirmation-dialbox .header,
 .confirmation-dialbox .container,
 .confirmation-dialbox .footer,
-.upload-modal .header,
-.upload-modal .container,
 .info-modal .header,
 .info-modal .container,
 .info-modal .footer {
@@ -406,14 +440,12 @@ input[type="color"]:focus + .text-input-label {
 }
 
 .confirmation-dialbox .header,
-.upload-modal .header,
 .info-modal .header {
     flex-direction: row-reverse;
     height: calc(15% - 20px);
 }
 
 .confirmation-dialbox .header .confirmation-close,
-.upload-modal .header .modal-close,
 .info-modal .header .modal-close {
     cursor: pointer;
     font-size: 1.5em;
@@ -424,7 +456,6 @@ input[type="color"]:focus + .text-input-label {
 }
 
 .confirmation-dialbox .container,
-.upload-modal .container,
 .info-modal .container {
     height: calc(60% - 20px);
     flex-direction: column;
@@ -441,14 +472,6 @@ input[type="color"]:focus + .text-input-label {
 
 #login-modal .container {
     height: calc(85% - 20px);
-}
-
-.upload-modal .container {
-    height: calc(70% - 20px);
-}
-
-.upload-modal .container input {
-    font-size: 1em;
 }
 
 .confirmation-dialbox .container .confirmation-title {
@@ -468,7 +491,6 @@ input[type="color"]:focus + .text-input-label {
 }
 
 .confirmation-dialbox.active,
-.upload-modal.active,
 .info-modal.active {
     opacity: 1;
     transform: translateY(0%);
@@ -653,7 +675,6 @@ input[type="color"]:focus + .text-input-label {
     }
 
     .confirmation-dialbox,
-    .upload-modal,
     .info-modal {
         width: 90%;
         height: 50%;
