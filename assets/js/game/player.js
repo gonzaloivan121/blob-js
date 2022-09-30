@@ -8,7 +8,7 @@ class Player extends Entity {
      * @param { number } radius - The radius of the Player
      * @param { string } skin - The image skin URL of the Player
      */
-    constructor(name = "Player", position, color, radius = 6, skin = null) {
+    constructor(name = "Player", position, color, radius = 6, skin = "") {
         super(name, position, color, radius, skin)
     }
 }

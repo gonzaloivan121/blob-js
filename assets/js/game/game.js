@@ -83,12 +83,11 @@ class Game {
      * Create Particles, Entities and the Player.
      * Start interval for the first time
      */
-    start_game(player_name = null, player_color = null, player_skin) {
+    start_game(player_name = null, player_color = null, player_skin = "") {
         if (player_name === null || player_color === null) return;
-        if (player_skin.length === 0) player_skin = null;
 
         this.player = this.create_player(player_name, player_color, player_skin);
-        
+
         var started = false;
         
         if (this.IntervalID === undefined) {
@@ -358,6 +357,8 @@ class Game {
         });
 
         this.entities.splice(i, 1);
+
+        this.remove_player_board(id);
     }
 
     /**
@@ -439,7 +440,7 @@ class Game {
         circle.style.backgroundColor = player.color;
         skin.src = player.skin;
 
-        if (player.skin === null || player.skin === undefined) {
+        if (player.skin === "") {
             skin.style.visibility = "hidden";
         }
         
@@ -472,7 +473,7 @@ class Game {
 
         if (skin.src !== player.skin) {
             skin.src = player.skin;
-            if (player.skin !== undefined) {
+            if (player.skin !== "") {
                 skin.style.visibility = "visible";
             } else {
                 skin.style.visibility = "hidden";
@@ -487,6 +488,11 @@ class Game {
             points.innerHTML = player.points;
             board.style.order = -player.points;
         }
+    }
+
+    remove_player_board(id) {
+        const board = document.getElementById(id);
+        board.remove();
     }
 
     /**

@@ -21,7 +21,7 @@ class Entity {
      * @param { number } radius - The radius of the Entity
      * @param { string } skin - The image skin URL of the Entity
      */
-    constructor(name = "Entity", position, color, radius = 6, skin = null) {
+    constructor(name = "Entity", position, color, radius = 6, skin = "") {
         /**
          *  The name of the Entity
          * @type { string }
