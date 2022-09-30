@@ -36,19 +36,7 @@ class Entity {
          */
         this.position = position;
 
-        this.color_rgb = color;
-
-        this.border_color = Color.get_rgb_string(
-            color.r - 20,
-            color.g - 20,
-            color.b - 20
-        );
-
-        this.color = Color.get_rgb_string(
-            color.r,
-            color.g,
-            color.b
-        );
+        this.set_color(color);
 
         this.radius = radius;
         this.skin = skin;
@@ -72,7 +60,7 @@ class Entity {
         this.draw_circle();
         this.draw_skin();
         this.draw_name();
-        this.draw_direction_arrow();
+        this.draw_direction();
     }
 
     draw_circle() {
@@ -116,21 +104,26 @@ class Entity {
         context.strokeText(this.name, this.position.x, this.position.y + this.radius * .25);
     }
 
-    draw_direction_arrow() {
-        var h = this.radius * (Math.sqrt(3) / 2);
-        const arrow_position = Vector.sum(this.position, Vector.multiply(this.direction, new Vector(this.radius * 3, this.radius * 3)));
+    draw_direction() {
+        const arrow_position = Vector.sum(
+            this.position,
+            Vector.multiply(
+                this.direction,
+                new Vector(this.radius * 3.25, this.radius * 3.25)
+            )
+        );
 
         context.beginPath();
-        context.strokeStyle = "#ff0000";
-
-        context.moveTo(arrow_position.x, arrow_position.y + (-h / 2));
-        context.lineTo(arrow_position.x + (-this.radius / 2), arrow_position.y + (h / 2));
-        context.lineTo(arrow_position.x + (this.radius / 2), arrow_position.y + (h / 2));
-        context.lineTo(arrow_position.x, arrow_position.y + (-h / 2));
-        
+        context.strokeStyle = this.color;
+        context.arc(
+            arrow_position.x,
+            arrow_position.y,
+            this.radius * .5,
+            0,
+            2 * Math.PI
+        );
+        context.lineWidth = 1;
         context.stroke();
-        context.fill();
-        
         context.closePath();
     }
 
@@ -141,6 +134,22 @@ class Entity {
      */
     set_direction(direction) {
         this.direction = direction;
+    }
+
+    set_color(color) {
+        this.color_rgb = color;
+
+        this.border_color = Color.get_rgb_string(
+            color.r - 20,
+            color.g - 20,
+            color.b - 20
+        );
+
+        this.color = Color.get_rgb_string(
+            color.r,
+            color.g,
+            color.b
+        );
     }
 
     /**

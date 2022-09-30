@@ -18,28 +18,73 @@ var game = new Game(60);
 
 function start_game() {
     if (!game.started) {
+        const start_game_button = document.getElementById("start-game");
         const player_name_input = document.getElementById("playername");
         const player_color_input = document.getElementById("playercolor");
-        const player_skin = document.getElementById("skin-image").src;
-        
-        const player_name = player_name_input.value;
-        const player_color = {
-            r: parseInt(player_color_input.value.substr(1, 2), 16),
-            g: parseInt(player_color_input.value.substr(3, 2), 16),
-            b: parseInt(player_color_input.value.substr(5, 2), 16)
-        }
+        const player_skin_input = document.getElementById("skin-image");
 
-        if (!player_name_input.checkValidity()) {
-            player_name_input.reportValidity();
-            createToast('Player name cannot be empty!', TOAST_TYPE.WARNING);
-            return;
-        }
+        const player_info = get_new_player_info(player_name_input, player_color_input, player_skin_input);
 
-        if (game.start_game(player_name, player_color, player_skin)) {
-            player_name_input.disabled = true;
-            player_color_input.disabled = true;
+        if (!player_info) return;
+
+        if (game.start_game(player_info.name, player_info.color, player_info.skin)) {
             hide_login_modal();
+            toggle_pannel();
+            start_game_button.innerHTML = "Leave Game";
+            start_game_button.onclick = show_leave_game_confirmation;
         }
+
+        player_name_input.oninput = (e) => {
+            const new_name = e.target.value;
+            if (new_name.length < 1) return;
+            game.player.name = new_name;
+        }
+
+        player_color_input.oninput = (e) => {
+            const new_color = Color.hex_to_rgb(e.target.value);
+            game.player.set_color(new_color);
+        }
+    }
+}
+
+function get_new_player_info(name_input, color_input, skin_input) {
+    if (!name_input.checkValidity()) {
+        name_input.reportValidity();
+        createToast('Player name cannot be empty!', TOAST_TYPE.WARNING);
+        return false;
+    }
+
+    return {
+        name: name_input.value,
+        color: Color.hex_to_rgb(color_input.value),
+        skin: skin_input.src
+    }
+}
+
+function show_leave_game_confirmation() {
+    show_confirmation_dialbox(
+        "Do you really wanna leave the game?",
+        "Yes",
+        "No",
+        leave_game
+    )
+}
+
+function leave_game() {
+    if (game.started) {
+        const start_game_button = document.getElementById("start-game");
+        game.leave_game();
+        hide_confirmation_dialbox();
+        setTimeout(() => {
+            show_confirmation_dialbox(
+                "Do you want to look at other players or close this window?",
+                "Keep looking",
+                "Close it",
+                hide_confirmation_dialbox,
+                window.close
+            )
+        }, 500);
+        start_game_button.style.display = "none";
     }
 }
 
@@ -146,7 +191,7 @@ function generate_skins_dropdown(skins = null) {
         name.innerHTML = skin.name;
 
         option.onclick = () => {
-            set_skin(option);
+            set_skin(skin);
         }
 
         option.prepend(name);
@@ -156,15 +201,33 @@ function generate_skins_dropdown(skins = null) {
     });
 }
 
-function set_skin(option) {
+function set_skin(skin) {
     const skin_image = document.getElementById("skin-image");
     const skin_name = document.getElementById("skin-name");
+    const reset_skin_button = document.getElementById("reset-skin");
 
-    skin_image.src = option.querySelector(".skin-image").src;
-    skin_name.innerHTML = option.querySelector(".skin-name").innerHTML;
+    skin_image.src = skin.icon;
+    skin_name.innerHTML = skin.name;
+
+    reset_skin_button.classList.add("active");
 
     if (game.started) {
         game.set_player_skin(skin_image.src);
+    }
+}
+
+function reset_skin() {
+    const skin_image = document.getElementById("skin-image");
+    const skin_name = document.getElementById("skin-name");
+    const reset_skin_button = document.getElementById("reset-skin");
+
+    skin_image.src = "";
+    skin_name.innerHTML = "";
+
+    reset_skin_button.classList.remove("active");
+
+    if (game.started) {
+        game.set_player_skin(null);
     }
 }
 
@@ -257,20 +320,6 @@ function hide_confirmation_dialbox() {
     }, 500);
 }
 
-function show_upload_modal() {
-    var upload_modal = document.getElementById("upload-modal");
-    var content = document.getElementById("content");
-    upload_modal.classList.add("active");
-    content.classList.add("blur");
-}
-
-function hide_upload_modal() {
-    var upload_modal = document.getElementById("upload-modal");
-    var content = document.getElementById("content");
-    upload_modal.classList.remove("active");
-    content.classList.remove("blur");
-}
-
 function show_info_modal() {
     var info_modal = document.getElementById("info-modal");
     var content = document.getElementById("content");
@@ -311,7 +360,7 @@ function show_save_confirmation() {
     );
 }
 
-function toogle_pannel() {
+function toggle_pannel() {
     var pannel = document.getElementById("pannel");
     if (pannel.classList.contains("active")) {
         pannel.classList.remove("active");

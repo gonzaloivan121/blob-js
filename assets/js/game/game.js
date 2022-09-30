@@ -99,15 +99,25 @@ class Game {
             started = true;
             this.login();
             this.listen_to_firebase();
-
-            firebase.database().ref('particles').once('value').then(snapshot => {
-                if (snapshot.numChildren() === 0) {
-                    this.create_particles(100);
-                }
-            });
+            this.generate_particles();
         }
 
         return started;
+    }
+
+    leave_game() {
+        if (this.player !== null && this.started) {
+            firebase.database().ref('players/' + this.player.id).remove();
+            this.player = null;
+        }
+    }
+
+    generate_particles() {
+        firebase.database().ref('particles').once('value').then(snapshot => {
+            if (snapshot.numChildren() === 0) {
+                this.create_particles(100);
+            }
+        });
     }
 
     /**
