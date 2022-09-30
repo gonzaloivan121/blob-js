@@ -142,7 +142,7 @@ ul, ol {
 }
 
 .dropdown:hover .dropdown-content {
-    height: 600%
+    height: 500%
 }
 
 .dropdown:hover .arrow {
