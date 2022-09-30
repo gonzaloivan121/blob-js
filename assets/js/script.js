@@ -230,7 +230,7 @@ function reset_skin() {
     reset_skin_button.classList.remove("active");
 
     if (game.started) {
-        game.set_player_skin(null);
+        game.set_player_skin("");
     }
 }
 
