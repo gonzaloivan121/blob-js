@@ -33,7 +33,7 @@ class Particle {
     }
 
     /**
-     * When the Particle gets eaten, it moves to a new random position and it's points is set to a new random number
+     * When the Particle gets eaten, it gets removed from the DB and destroyed
      */
     get_eaten() {
         firebase.database().ref('particles/' + this.position.x + 'x' + this.position.y).remove();
@@ -53,14 +53,5 @@ class Particle {
             2 * Math.PI
         );
         context.fill();
-    }
-
-    /**
-     * Move the Particle to a set position
-     * 
-     * @param { Vector } position - The position that the Particle will move to
-     */
-    move_to(position) {
-        this.position = position;
     }
 }
