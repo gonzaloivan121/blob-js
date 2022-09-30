@@ -185,9 +185,9 @@ class Entity {
                 if (entity.is_alive && this.is_alive) {
                     if (this.radius > entity.radius) {
                         this.eat_entity(entity);
-                    } else {
+                    }/* else {
                         entity.eat_entity(this);
-                    }
+                    }*/
                 }
             }
         }

@@ -41,45 +41,6 @@ class Game {
     }
 
     /**
-     * Update and reset the Interval
-     */
-    update_interval() {
-        this.Interval = 1000 / this.ticks;
-        this.reset_interval();
-    }
-    
-    /**
-     * Reset the Interval
-     */
-    reset_interval() {
-        clearInterval(this.IntervalID);
-        this.start_interval(this.Interval);
-    }
-
-    /**
-     * Set all Particle positions to a random Vector
-     */
-    random_start() {
-        this.particles.forEach(particle => {
-            const position = new Vector(
-                Utilities.random(50, canvas_width - 50),
-                Utilities.random(50, canvas_height - 50)
-            );
-            particle.position = position;
-        });
-    }
-
-    /**
-     * Update the tick count and reset the interval
-     * 
-     * @param { number } ticks 
-     */
-    update_ticks(ticks) {
-        this.ticks = ticks;
-        this.update_interval();
-    }
-
-    /**
      * Create Particles, Entities and the Player.
      * Start interval for the first time
      */
@@ -141,15 +102,12 @@ class Game {
                         });
                     }
                 });
-            } else {
-                // Logged out
             }
         });
 
         firebase.auth().signInAnonymously().catch(error => {
             const code = error.code;
             const message = error.message;
-
             createToast('Error ' + code + ': ' + message, TOAST_TYPE.ERROR);
         });
     }
@@ -192,21 +150,19 @@ class Game {
         const entities_snapshot = snapshot.val();
         if (entities_snapshot === null) return;
         Object.keys(entities_snapshot).forEach(id => {
-            var entity = entities_snapshot[id];
+            const entity = entities_snapshot[id];
             this.update_player_board(entity);
-
 
             if (this.player !== null && entity.id === this.player.id) return;
 
             var found_entity = this.entities.find((e) => {
-                return e.id === entity.id;
+                return e.id === id;
             });
 
             const entity_data = this.generate_entity_data(entity);
 
             if (!found_entity) {
-                console.log("entity not found")
-                //this.create_entity(entity_data);
+                this.create_entity(entity_data);
                 return;
             }
 
@@ -234,20 +190,20 @@ class Game {
         const particles_snapshot = snapshot.val();
         if (particles_snapshot === null) return;
         Object.keys(particles_snapshot).forEach(id => {
-            var particle = particles_snapshot[id];
+            const particle = particles_snapshot[id];
 
             var found_particle = this.particles.find((p) => {
-                return  p.position.x === particle.position.x &&
-                        p.position.y === particle.position.y;
+                return p.id === id;
             });
 
             const particle_data = this.generate_particle_data(particle);
 
             if (!found_particle) {
-                //this.create_particle_from(particle_data);
+                this.create_particle_from(particle_data);
                 return;
             };
 
+            found_particle.id = particle_data.id;
             found_particle.position = particle_data.position;
             found_particle.color = particle_data.color;
             found_particle.radius = particle_data.radius;
@@ -279,8 +235,24 @@ class Game {
         if (added_player.id === this.player.id) return;
         const entity_data = this.generate_entity_data(added_player);
         this.create_entity(entity_data);
-        console.log("new player")
         this.generate_player_board(added_player);
+    }
+
+    /**
+     * Fires whenever a new Particle is added
+     * 
+     * @param { firebase.database.DataSnapshot } snapshot 
+     */
+    handle_new_particle(snapshot) {
+        const added_particle = snapshot.val();
+
+        const found_particle = this.particles.find((p) => {
+            return p.id === added_particle.id;
+        });
+
+        if (found_particle) return;
+        const particle_data = this.generate_particle_data(added_particle);
+        this.create_particle_from(particle_data);
     }
 
     generate_entity_data(entity) {
@@ -311,6 +283,7 @@ class Game {
 
     generate_particle_data(particle) {
         return {
+            id: particle.id,
             position: new Vector(
                 particle.position.x,
                 particle.position.y
@@ -319,24 +292,6 @@ class Game {
             radius: particle.radius,
             points: particle.points
         }
-    }
-
-    /**
-     * Fires whenever a new Particle is added
-     * 
-     * @param { firebase.database.DataSnapshot } snapshot 
-     */
-    handle_new_particle(snapshot) {
-        const added_particle = snapshot.val();
-
-        var found_particle = this.particles.find((p) => {
-            return  p.position.x === added_particle.position.x &&
-                    p.position.y === added_particle.position.y;
-        });
-
-        if (!found_particle) return;
-        const particle_data = this.generate_particle_data(added_particle);
-        this.create_particle_from(particle_data);
     }
 
     /**
@@ -349,6 +304,7 @@ class Game {
 
         if (this.player.id === id) {
             this.player = null;
+            this.remove_player_board(id);
             return;
         }
 
@@ -357,7 +313,6 @@ class Game {
         });
 
         this.entities.splice(i, 1);
-
         this.remove_player_board(id);
     }
 
@@ -367,11 +322,10 @@ class Game {
      * @param { firebase.database.DataSnapshot } snapshot 
      */
     handle_particle_removed(snapshot) {
-        const particle = snapshot.val();
+        const id = snapshot.val().id;
         
         const i = this.particles.findIndex(p => {
-            return  p.position.x === particle.position.x &&
-                    p.position.y === particle.position.y;
+            return p.id === id;
         });
 
         this.particles.splice(i, 1);
@@ -402,7 +356,7 @@ class Game {
 
     create_particle() {
         const particle = new Particle();
-        const particle_ref = firebase.database().ref('particles/' + particle.position.x + 'x' + particle.position.y);
+        const particle_ref = firebase.database().ref('particles/' + particle.id);
         particle_ref.set(particle);
         this.particles.push(particle);
     }
@@ -410,6 +364,7 @@ class Game {
     create_particle_from(particle_data) {
         var particle = new Particle();
         
+        particle.id = particle_data.id;
         particle.position = particle_data.position;
         particle.color = particle_data.color;
         particle.radius = particle_data.radius;
@@ -504,14 +459,6 @@ class Game {
         this.player.set_direction(direction);
     }
 
-    set_player_skin(skin) {
-        this.player.skin = skin;
-    }
-    
-    set_player_name(name) {
-        this.player.name = name;
-    }
-
     start_interval(time) {
         this.IntervalID = setInterval(() => {
             this.draw_background();
@@ -530,15 +477,14 @@ class Game {
             }
 
             if (this.player !== null && this.player.is_alive) {
+                if (this.player_ref !== undefined) {
+                    this.player_ref.set(this.player);
+                }
                 this.player.update();
                 this.player.check_collision(
                     this.particles.length > 0 ? this.particles : null,
                     this.entities.length > 0 ? this.entities : null
                 );
-
-                if (this.player_ref !== undefined) {
-                    this.player_ref.set(this.player);
-                }
             }
         }, time);
 

@@ -7,6 +7,7 @@
  */
 class Particle {
     constructor() {
+        this.id = Utilities.unique_id();
         /**
          *  The Vector position of the Particle
          * @type { Vector }
@@ -36,7 +37,7 @@ class Particle {
      * When the Particle gets eaten, it gets removed from the DB and destroyed
      */
     get_eaten() {
-        firebase.database().ref('particles/' + this.position.x + 'x' + this.position.y).remove();
+        firebase.database().ref('particles/' + this.id).remove();
     }
 
     /**

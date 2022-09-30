@@ -126,4 +126,11 @@ class Utilities {
     static lerp(start, end, amt) {
         return (1 - amt) * start + amt * end;
     }
+
+    static unique_id() {
+        return String(
+            Date.now().toString(32) +
+            Math.random().toString(16)
+        ).replace(/\./g, '');
+    }
 }
