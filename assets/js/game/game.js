@@ -100,6 +100,7 @@ class Game {
             this.login();
             this.listen_to_firebase();
             this.generate_particles();
+            this.spawn_random_particle();
         }
 
         return started;
@@ -333,7 +334,7 @@ class Game {
                     p.position.y === added_particle.position.y;
         });
 
-        if (found_particle) return;
+        if (!found_particle) return;
 
         this.create_particle_from({
             position: new Vector(
@@ -396,22 +397,12 @@ class Game {
 
     create_particles(amount) {
         for (let i = 0; i < amount; i++) {
-            var particle = this.create_particle(
-                Color.get_rgb_string(
-                    Utilities.random(0, 255),
-                    Utilities.random(0, 255),
-                    Utilities.random(0, 255)
-                )
-            );
-            this.particles.push(particle);
+            this.particles.push(this.create_particle());
         }
     }
 
-    create_particle(color) {
-        var particle = new Particle(new Vector(
-            Utilities.random(50, canvas_width - 50),
-            Utilities.random(50, canvas_height - 50)
-        ), color);
+    create_particle() {
+        var particle = new Particle();
 
         const particle_ref = firebase.database().ref('particles/' + particle.position.x + 'x' + particle.position.y);
         
@@ -426,12 +417,11 @@ class Game {
     }
 
     create_particle_from(particle_data) {
-        var particle = new Particle(
-            particle_data.position,
-            particle_data.color,
-            particle_data.radius
-        );
-
+        var particle = new Particle();
+        
+        particle.position = particle_data.position;
+        particle.color = particle_data.color;
+        particle.radius = particle_data.radius;
         particle.points = particle_data.points;
 
         this.particles.push(particle);
@@ -559,6 +549,15 @@ class Game {
         if (this.IntervalID !== undefined) {
             this.started = true;
         }
+    }
+
+    spawn_random_particle() {
+        const time = Utilities.random(1, 50) * 100;
+
+        setTimeout(() => {
+            this.particles.push(this.create_particle());
+            this.spawn_random_particle();
+        }, time);
     }
 
     draw_background() {
