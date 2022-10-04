@@ -6,13 +6,24 @@
  * @public
  */
 class Particle {
-    constructor() {
+    constructor(particle_data = null) {
+        if (particle_data !== null) {
+            this.create_from(particle_data);
+        } else {
+            this.generate_new();
+        }
+    }
+
+    create_from(particle_data) {
+        this.id = particle_data.id;
+        this.position = particle_data.position;
+        this.color = particle_data.color;
+        this.radius = particle_data.radius;
+        this.points = particle_data.points;
+    }
+
+    generate_new() {
         this.id = Utilities.unique_id();
-        /**
-         *  The Vector position of the Particle
-         * @type { Vector }
-         * @public
-         */
         this.position = new Vector(
             Utilities.random(50, canvas_width - 50),
             Utilities.random(50, canvas_height - 50)

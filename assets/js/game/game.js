@@ -59,7 +59,6 @@ class Game {
             started = true;
             this.login();
             this.listen_to_firebase();
-            this.generate_particles();
             this.spawn_random_particle();
         }
 
@@ -358,18 +357,11 @@ class Game {
         const particle = new Particle();
         const particle_ref = firebase.database().ref('particles/' + particle.id);
         particle_ref.set(particle);
-        this.particles.push(particle);
     }
 
-    create_particle_from(particle_data) {
-        var particle = new Particle();
-        
-        particle.id = particle_data.id;
-        particle.position = particle_data.position;
-        particle.color = particle_data.color;
-        particle.radius = particle_data.radius;
-        particle.points = particle_data.points;
-
+    create_particle_from(particle_data = null) {
+        if (particle_data === null) return;
+        const particle = new Particle(particle_data);
         this.particles.push(particle);
     }
 
